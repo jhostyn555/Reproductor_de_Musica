@@ -1,0 +1,252 @@
+/* =============================================
+   layout.css — Estilos del Layout principal
+   EcommerceApp
+   ============================================= */
+
+:root {
+    --nav-bg: rgba(10, 12, 22, 0.95);
+    --nav-border: rgba(255, 255, 255, 0.08);
+    --nav-text: #cbd5e1;
+    --nav-text-hover: #e2e8f0;
+    --clr-primary: #6366f1;
+    --clr-secondary: #8b5cf6;
+    --font: 'Inter', system-ui, sans-serif;
+}
+
+body {
+    font-family: var(--font);
+    background-color: #0d0f1a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ─── Navbar ─── */
+#main-navbar {
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--nav-border);
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.brand-custom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #e2e8f0 !important;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.3px;
+    text-decoration: none !important;
+    transition: opacity 0.2s;
+}
+
+.brand-custom:hover { opacity: 0.85; }
+
+.brand-logo-sm {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* Nav links */
+#main-navbar .nav-link {
+    color: var(--nav-text) !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 8px 14px !important;
+    border-radius: 8px;
+    transition: color 0.2s, background 0.2s;
+}
+
+#main-navbar .nav-link:hover {
+    color: var(--nav-text-hover) !important;
+    background: rgba(255, 255, 255, 0.07);
+}
+
+/* Register button */
+.btn-nav-register {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary)) !important;
+    color: #fff !important;
+    padding: 8px 18px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.35);
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s !important;
+}
+
+.btn-nav-register:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5) !important;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary)) !important;
+}
+
+/* ─── Role badges ─── */
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.role-admin {
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+}
+
+.role-user {
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--clr-primary);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+/* ─── User dropdown ─── */
+.user-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+.user-menu {
+    background: #1a1d2e !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 8px !important;
+    min-width: 220px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+    margin-top: 8px !important;
+}
+
+.dropdown-header-custom {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+}
+
+.dh-avatar {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.dh-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dh-role {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.user-menu .dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    margin: 4px 0 !important;
+}
+
+.logout-item {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    color: #f87171 !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 8px !important;
+    padding: 9px 12px !important;
+    background: transparent;
+    border: none;
+    width: 100%;
+    transition: background 0.2s !important;
+}
+
+.logout-item:hover {
+    background: rgba(248, 113, 113, 0.1) !important;
+}
+
+/* ─── Main content ─── */
+.main-content {
+    flex: 1;
+}
+
+/* ─── Footer ─── */
+.app-footer {
+    background: rgba(10, 12, 22, 0.8);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 18px 0;
+    margin-top: auto;
+}
+
+.footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-brand {
+    font-weight: 700;
+    font-size: 0.9rem;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.footer-copy {
+    font-size: 0.8rem;
+    color: #475569;
+}

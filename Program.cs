@@ -56,13 +56,47 @@ using (var scope = app.Services.CreateScope())
         await db.Database.MigrateAsync();
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+
         string[] roles = { "Admin", "User" };
         foreach (var role in roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
-            {
                 await roleManager.CreateAsync(new IdentityRole(role));
-            }
+        }
+
+        // Seed Admin por defecto
+        const string adminEmail    = "admin@ecommerce.com";
+        const string adminPassword = "Admin123!";
+        if (await userManager.FindByEmailAsync(adminEmail) is null)
+        {
+            var admin = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email    = adminEmail,
+                FullName = "Administrador",
+                EmailConfirmed = true
+            };
+            var res = await userManager.CreateAsync(admin, adminPassword);
+            if (res.Succeeded)
+                await userManager.AddToRoleAsync(admin, "Admin");
+        }
+
+        // Seed Usuario normal por defecto
+        const string userEmail    = "user@ecommerce.com";
+        const string userPassword = "User123!";
+        if (await userManager.FindByEmailAsync(userEmail) is null)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = userEmail,
+                Email    = userEmail,
+                FullName = "Usuario Demo",
+                EmailConfirmed = true
+            };
+            var res = await userManager.CreateAsync(user, userPassword);
+            if (res.Succeeded)
+                await userManager.AddToRoleAsync(user, "User");
         }
     }
     catch (Exception ex)

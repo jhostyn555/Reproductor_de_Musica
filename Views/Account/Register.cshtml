@@ -1,33 +1,112 @@
-﻿@model EcommerceApp.Models.RegisterViewModel
-<h2>Registro</h2>
-<form asp-action="Register" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group mb-2">
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
+@model EcommerceApp.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Crear Cuenta";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="auth-card auth-card-wide">
+    <div class="auth-header">
+        <div class="auth-icon auth-icon-purple">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="8.5" cy="7" r="4"/>
+                <line x1="20" y1="8" x2="20" y2="14"/>
+                <line x1="23" y1="11" x2="17" y2="11"/>
+            </svg>
+        </div>
+        <h1 class="auth-title">Crear Cuenta</h1>
+        <p class="auth-subtitle">Únete a nuestra plataforma hoy</p>
     </div>
-    <div class="form-group mb-2">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+
+    <form asp-action="Register" method="post" class="auth-form">
+        <div asp-validation-summary="ModelOnly" class="alert-error"></div>
+
+        <div class="form-grid">
+            <div class="form-field">
+                <label asp-for="FullName" class="field-label">Nombre completo</label>
+                <div class="field-wrapper">
+                    <span class="field-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </span>
+                    <input asp-for="FullName" class="field-input" placeholder="Juan García" autocomplete="name" />
+                </div>
+                <span asp-validation-for="FullName" class="field-error"></span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="Email" class="field-label">Correo electrónico</label>
+                <div class="field-wrapper">
+                    <span class="field-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                    </span>
+                    <input asp-for="Email" class="field-input" placeholder="tu@email.com" autocomplete="email" />
+                </div>
+                <span asp-validation-for="Email" class="field-error"></span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="Password" class="field-label">Contraseña</label>
+                <div class="field-wrapper">
+                    <span class="field-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </span>
+                    <input asp-for="Password" class="field-input" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+                </div>
+                <span asp-validation-for="Password" class="field-error"></span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="ConfirmPassword" class="field-label">Confirmar contraseña</label>
+                <div class="field-wrapper">
+                    <span class="field-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 11 12 14 22 4"/>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                        </svg>
+                    </span>
+                    <input asp-for="ConfirmPassword" class="field-input" placeholder="Repite tu contraseña" autocomplete="new-password" />
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Address" class="field-label">Dirección <span class="optional-tag">Opcional</span></label>
+            <div class="field-wrapper">
+                <span class="field-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                </span>
+                <input asp-for="Address" class="field-input" placeholder="Tu dirección de envío" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn-auth btn-secondary-auth" id="btn-register">
+            <span>Crear Cuenta</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+            </svg>
+        </button>
+    </form>
+
+    <div class="auth-footer">
+        <p>¿Ya tienes cuenta? <a asp-action="Login" class="auth-link">Inicia sesión</a></p>
     </div>
-    <div class="form-group mb-2">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="form-group mb-2">
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" class="form-control" />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
-    <div class="form-group mb-2">
-        <label asp-for="Address"></label>
-        <input asp-for="Address" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Registrarse</button>
-</form>
+</div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
