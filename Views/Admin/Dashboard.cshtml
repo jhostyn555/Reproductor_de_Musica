@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"]      = "Dashboard";
+    ViewData["ActiveMenu"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["SectionIcon"] = @"
+        <svg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 24 24'
+             fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'>
+            <rect x='3' y='3' width='7' height='7'/>
+            <rect x='14' y='3' width='7' height='7'/>
+            <rect x='14' y='14' width='7' height='7'/>
+            <rect x='3' y='14' width='7' height='7'/>
+        </svg>";
+}
+
+<div class="page-heading">
+    <h1>Dashboard</h1>
+    <p>Resumen general del sistema</p>
+</div>
+
+<partial name="_UnderConstruction" />
