@@ -8,7 +8,7 @@ namespace EcommerceApp.Controllers
     {
         public IActionResult Dashboard()        => View();
         public IActionResult GenerosYArtistas() => View();
-        public IActionResult Musicas()          => View();
+        public IActionResult Musicas()          => RedirectToAction("Index", "Musicas");
         public IActionResult Albumes()          => View();
         public IActionResult Playlists()        => View();
         public IActionResult Comentarios()      => View();

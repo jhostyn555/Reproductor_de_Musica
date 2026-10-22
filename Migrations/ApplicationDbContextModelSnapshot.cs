@@ -95,6 +95,234 @@ namespace EcommerceApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("EcommerceApp.Models.Artista", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Artistas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nombre = "Bad Bunny"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nombre = "Taylor Swift"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nombre = "Drake"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nombre = "Shakira"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Nombre = "The Weeknd"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Nombre = "J Balvin"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Nombre = "Ariana Grande"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Nombre = "Daddy Yankee"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Nombre = "Ozuna"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Nombre = "Billie Eilish"
+                        });
+                });
+
+            modelBuilder.Entity("EcommerceApp.Models.Genero", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Generos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nombre = "Pop"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nombre = "Rock"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nombre = "Hip-Hop"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nombre = "Electrónica"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Nombre = "Reggaetón"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Nombre = "Jazz"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Nombre = "Clásica"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Nombre = "R&B"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Nombre = "Metal"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Nombre = "Salsa"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Nombre = "Cumbia"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Nombre = "Bachata"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Nombre = "Trap"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Nombre = "Indie"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Nombre = "Folk"
+                        });
+                });
+
+            modelBuilder.Entity("EcommerceApp.Models.Musica", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AudioPublicId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AudioUrl")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreadoEn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ImagenPublicId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImagenUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Musicas");
+                });
+
+            modelBuilder.Entity("EcommerceApp.Models.MusicaArtista", b =>
+                {
+                    b.Property<int>("MusicaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ArtistaId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("MusicaId", "ArtistaId");
+
+                    b.HasIndex("ArtistaId");
+
+                    b.ToTable("MusicaArtista");
+                });
+
+            modelBuilder.Entity("EcommerceApp.Models.MusicaGenero", b =>
+                {
+                    b.Property<int>("MusicaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GeneroId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("MusicaId", "GeneroId");
+
+                    b.HasIndex("GeneroId");
+
+                    b.ToTable("MusicaGenero");
+                });
+
             modelBuilder.Entity("EcommerceApp.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -269,6 +497,44 @@ namespace EcommerceApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("EcommerceApp.Models.MusicaArtista", b =>
+                {
+                    b.HasOne("EcommerceApp.Models.Artista", "Artista")
+                        .WithMany("MusicaArtistas")
+                        .HasForeignKey("ArtistaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EcommerceApp.Models.Musica", "Musica")
+                        .WithMany("MusicaArtistas")
+                        .HasForeignKey("MusicaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artista");
+
+                    b.Navigation("Musica");
+                });
+
+            modelBuilder.Entity("EcommerceApp.Models.MusicaGenero", b =>
+                {
+                    b.HasOne("EcommerceApp.Models.Genero", "Genero")
+                        .WithMany("MusicaGeneros")
+                        .HasForeignKey("GeneroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EcommerceApp.Models.Musica", "Musica")
+                        .WithMany("MusicaGeneros")
+                        .HasForeignKey("MusicaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genero");
+
+                    b.Navigation("Musica");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -318,6 +584,23 @@ namespace EcommerceApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EcommerceApp.Models.Artista", b =>
+                {
+                    b.Navigation("MusicaArtistas");
+                });
+
+            modelBuilder.Entity("EcommerceApp.Models.Genero", b =>
+                {
+                    b.Navigation("MusicaGeneros");
+                });
+
+            modelBuilder.Entity("EcommerceApp.Models.Musica", b =>
+                {
+                    b.Navigation("MusicaArtistas");
+
+                    b.Navigation("MusicaGeneros");
                 });
 #pragma warning restore 612, 618
         }

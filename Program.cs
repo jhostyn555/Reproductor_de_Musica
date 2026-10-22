@@ -25,6 +25,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<EcommerceApp.Services.CloudinaryService>();
 
 var app = builder.Build();
 
