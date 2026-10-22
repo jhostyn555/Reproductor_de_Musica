@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using EcommerceApp.Models;
 
@@ -30,7 +30,7 @@ namespace EcommerceApp.Controllers
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     return LocalRedirect(returnUrl);
 
-                return RedirectToAction("Index", "Products");
+                return RedirectToAction("Inicio", "User");
             }
 
             ModelState.AddModelError(string.Empty, "Credenciales inválidas");
@@ -60,7 +60,7 @@ namespace EcommerceApp.Controllers
                 // Todo usuario nuevo recibe el rol "User" (creado al iniciar la app)
                 await userManager.AddToRoleAsync(user, "User");
                 await signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Products");
+                return RedirectToAction("Inicio", "User");
             }
 
             foreach (var error in result.Errors)

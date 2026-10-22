@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"]      = "Perfil";
+    ViewData["ActiveMenu"] = "Perfil";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var icon = @"<svg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 24 24'
+         fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/>
+        <circle cx='12' cy='7' r='4'/>
+    </svg>";
+}
+
+<div class="up-page-heading">
+    <h1>Perfil</h1>
+    <p>Tu información y configuración</p>
+</div>
+
+<div class="up-construction">
+    <div class="up-uc-icon">@Html.Raw(icon)</div>
+    <h2 class="up-uc-title">Panel en construcción</h2>
+    <p class="up-uc-text">La sección de <strong>Perfil</strong> está siendo desarrollada.<br>Pronto podrás editar tu información, foto y preferencias.</p>
+    <div class="up-uc-badge">
+        <div class="up-uc-dots">
+            <div class="up-uc-dot"></div>
+            <div class="up-uc-dot"></div>
+            <div class="up-uc-dot"></div>
+        </div>
+        En desarrollo
+    </div>
+</div>

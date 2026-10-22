@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"]      = "Novedades";
+    ViewData["ActiveMenu"] = "Novedades";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var icon = @"<svg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 24 24'
+         fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'>
+        <polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/>
+    </svg>";
+}
+
+<div class="up-page-heading">
+    <h1>Novedades</h1>
+    <p>Lo más nuevo de la plataforma</p>
+</div>
+
+<div class="up-construction">
+    <div class="up-uc-icon">@Html.Raw(icon)</div>
+    <h2 class="up-uc-title">Panel en construcción</h2>
+    <p class="up-uc-text">La sección de <strong>Novedades</strong> está siendo desarrollada.<br>Pronto encontrarás los últimos lanzamientos y tendencias.</p>
+    <div class="up-uc-badge">
+        <div class="up-uc-dots">
+            <div class="up-uc-dot"></div>
+            <div class="up-uc-dot"></div>
+            <div class="up-uc-dot"></div>
+        </div>
+        En desarrollo
+    </div>
+</div>
