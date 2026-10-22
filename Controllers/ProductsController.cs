@@ -6,17 +6,9 @@ using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
 {
-    // Constructor primario: "context" reemplaza el campo _context de antes.
     [Authorize]
     public class ProductsController(ApplicationDbContext context) : Controller
     {
-        [AllowAnonymous]
-        public async Task<IActionResult> Index()
-        {
-            var products = await context.Products.AsNoTracking().ToListAsync();
-            return View(products);
-        }
-
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
@@ -36,7 +28,7 @@ namespace EcommerceApp.Controllers
             if (!ModelState.IsValid) return View(product);
             context.Products.Add(product);
             await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Inicio", "User");
         }
 
         [Authorize(Roles = "Admin")]
@@ -55,7 +47,6 @@ namespace EcommerceApp.Controllers
             if (id != product.Id) return NotFound();
             if (!ModelState.IsValid) return View(product);
 
-            // Cargar el original para no sobrescribir CreatedAt ni campos no editables
             var existing = await context.Products.FindAsync(id);
             if (existing == null) return NotFound();
 
@@ -68,7 +59,7 @@ namespace EcommerceApp.Controllers
             existing.UpdatedAt = DateTime.UtcNow;
 
             await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Inicio", "User");
         }
 
         [Authorize(Roles = "Admin")]
@@ -90,7 +81,7 @@ namespace EcommerceApp.Controllers
                 context.Products.Remove(product);
                 await context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Inicio", "User");
         }
     }
 }
