@@ -21,15 +21,54 @@ namespace EcommerceApp.Controllers
             _cloudinary = cloudinary;
         }
 
-        // GET: Musicas
-        public async Task<IActionResult> Index()
+        // GET: Musicas?q=texto&vista=tarjetas|cuadricula
+        // Busca por nombre de la canción, artista o género (solo al enviar el formulario).
+        public async Task<IActionResult> Index(string? q, string? vista)
         {
-            var musicas = await _db.Musicas
+            q = q?.Trim();
+
+            var query = _db.Musicas
                 .Include(m => m.MusicaGeneros).ThenInclude(mg => mg.Genero)
                 .Include(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(q))
+            {
+                // Escapar comodines de LIKE para que el texto se busque literal.
+                var escapado = q.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+                var patron = $"%{escapado}%";
+
+                // ILike = coincidencia sin distinguir mayúsculas (PostgreSQL)
+                query = query.Where(m =>
+                    EF.Functions.ILike(m.Nombre, patron) ||
+                    m.MusicaArtistas.Any(ma => EF.Functions.ILike(ma.Artista.Nombre, patron)) ||
+                    m.MusicaGeneros.Any(mg => EF.Functions.ILike(mg.Genero.Nombre, patron)));
+            }
+
+            var musicas = await query
                 .OrderByDescending(m => m.CreadoEn)
                 .ToListAsync();
+
+            ViewData["Q"] = q ?? string.Empty;
+            ViewData["Vista"] = vista == "cuadricula" ? "cuadricula" : "tarjetas";
+            ViewData["Total"] = string.IsNullOrEmpty(q)
+                ? musicas.Count
+                : await _db.Musicas.CountAsync();
+
             return View(musicas);
+        }
+
+        // GET: Musicas/Reproducir/5
+        // Página de reproducción a pantalla completa (estilo Spotify).
+        public async Task<IActionResult> Reproducir(int id)
+        {
+            var musica = await _db.Musicas
+                .Include(m => m.MusicaGeneros).ThenInclude(mg => mg.Genero)
+                .Include(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (musica == null) return NotFound();
+            return View(musica);
         }
 
         // GET: Musicas/Create
@@ -49,18 +88,31 @@ namespace EcommerceApp.Controllers
         [RequestSizeLimit(52428800)] // 50 MB
         public async Task<IActionResult> Create(MusicaViewModel vm)
         {
+            var urlAudio = vm.UrlAudio?.Trim();
+            var urlImagen = vm.UrlImagen?.Trim();
+
             if (!ModelState.IsValid)
             {
-                vm.GenerosDisponibles = await GetGenerosSelectList();
-                vm.ArtistasDisponibles = await GetArtistasSelectList();
+                await RellenarListasAsync(vm);
                 return View(vm);
             }
 
-            if (vm.ArchivoAudio == null)
+            // El audio es obligatorio: archivo o enlace.
+            if (vm.ArchivoAudio == null && string.IsNullOrEmpty(urlAudio))
             {
-                ModelState.AddModelError("ArchivoAudio", "El archivo de audio es obligatorio.");
-                vm.GenerosDisponibles = await GetGenerosSelectList();
-                vm.ArtistasDisponibles = await GetArtistasSelectList();
+                ModelState.AddModelError("ArchivoAudio", "Sube un archivo de audio o indica un enlace de audio.");
+            }
+            if (!string.IsNullOrEmpty(urlAudio) && !EsUrlHttp(urlAudio))
+            {
+                ModelState.AddModelError("UrlAudio", "El enlace de audio debe ser una URL válida que empiece por http:// o https://");
+            }
+            if (!string.IsNullOrEmpty(urlImagen) && !EsUrlHttp(urlImagen))
+            {
+                ModelState.AddModelError("UrlImagen", "El enlace de imagen debe ser una URL válida que empiece por http:// o https://");
+            }
+            if (!ModelState.IsValid)
+            {
+                await RellenarListasAsync(vm);
                 return View(vm);
             }
 
@@ -68,15 +120,24 @@ namespace EcommerceApp.Controllers
             {
                 var musica = new Musica { Nombre = vm.Nombre };
 
-                var (audioUrl, audioPid) = await _cloudinary.SubirAudioAsync(vm.ArchivoAudio);
-                musica.AudioUrl = audioUrl;
-                musica.AudioPublicId = audioPid;
+                // Si hay archivo, tiene prioridad sobre el enlace.
+                var audio = vm.ArchivoAudio != null
+                    ? await _cloudinary.SubirAudioAsync(vm.ArchivoAudio)
+                    : await _cloudinary.SubirAudioDesdeUrlAsync(urlAudio!);
+                musica.AudioUrl = audio.Url;
+                musica.AudioPublicId = audio.PublicId;
 
                 if (vm.ArchivoImagen != null)
                 {
-                    var (imgUrl, imgPid) = await _cloudinary.SubirImagenAsync(vm.ArchivoImagen);
-                    musica.ImagenUrl = imgUrl;
-                    musica.ImagenPublicId = imgPid;
+                    var img = await _cloudinary.SubirImagenAsync(vm.ArchivoImagen);
+                    musica.ImagenUrl = img.Url;
+                    musica.ImagenPublicId = img.PublicId;
+                }
+                else if (!string.IsNullOrEmpty(urlImagen))
+                {
+                    var img = await _cloudinary.SubirImagenDesdeUrlAsync(urlImagen);
+                    musica.ImagenUrl = img.Url;
+                    musica.ImagenPublicId = img.PublicId;
                 }
 
                 _db.Musicas.Add(musica);
@@ -97,8 +158,7 @@ namespace EcommerceApp.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error al subir archivos: {ex.Message}");
-                vm.GenerosDisponibles = await GetGenerosSelectList();
-                vm.ArtistasDisponibles = await GetArtistasSelectList();
+                await RellenarListasAsync(vm);
                 return View(vm);
             }
         }
@@ -133,10 +193,17 @@ namespace EcommerceApp.Controllers
         [RequestSizeLimit(52428800)]
         public async Task<IActionResult> Edit(int id, MusicaViewModel vm)
         {
+            var urlAudio = vm.UrlAudio?.Trim();
+            var urlImagen = vm.UrlImagen?.Trim();
+
+            if (!string.IsNullOrEmpty(urlAudio) && !EsUrlHttp(urlAudio))
+                ModelState.AddModelError("UrlAudio", "El enlace de audio debe ser una URL válida que empiece por http:// o https://");
+            if (!string.IsNullOrEmpty(urlImagen) && !EsUrlHttp(urlImagen))
+                ModelState.AddModelError("UrlImagen", "El enlace de imagen debe ser una URL válida que empiece por http:// o https://");
+
             if (!ModelState.IsValid)
             {
-                vm.GenerosDisponibles = await GetGenerosSelectList();
-                vm.ArtistasDisponibles = await GetArtistasSelectList();
+                await RellenarListasAsync(vm);
                 return View(vm);
             }
 
@@ -151,24 +218,34 @@ namespace EcommerceApp.Controllers
             {
                 musica.Nombre = vm.Nombre;
 
-                if (vm.ArchivoAudio != null)
+                // Subir primero el nuevo recurso y borrar el anterior después,
+                // así un fallo en la subida no deja la canción sin audio.
+                if (vm.ArchivoAudio != null || !string.IsNullOrEmpty(urlAudio))
                 {
-                    if (!string.IsNullOrEmpty(musica.AudioPublicId))
-                        await _cloudinary.EliminarRecursoAsync(musica.AudioPublicId, ResourceType.Raw);
+                    var audio = vm.ArchivoAudio != null
+                        ? await _cloudinary.SubirAudioAsync(vm.ArchivoAudio)
+                        : await _cloudinary.SubirAudioDesdeUrlAsync(urlAudio!);
 
-                    var (audioUrl, audioPid) = await _cloudinary.SubirAudioAsync(vm.ArchivoAudio);
-                    musica.AudioUrl = audioUrl;
-                    musica.AudioPublicId = audioPid;
+                    var anteriorAudio = musica.AudioPublicId;
+                    musica.AudioUrl = audio.Url;
+                    musica.AudioPublicId = audio.PublicId;
+
+                    if (!string.IsNullOrEmpty(anteriorAudio))
+                        await _cloudinary.EliminarRecursoAsync(anteriorAudio, ResourceType.Raw);
                 }
 
-                if (vm.ArchivoImagen != null)
+                if (vm.ArchivoImagen != null || !string.IsNullOrEmpty(urlImagen))
                 {
-                    if (!string.IsNullOrEmpty(musica.ImagenPublicId))
-                        await _cloudinary.EliminarRecursoAsync(musica.ImagenPublicId, ResourceType.Image);
+                    var img = vm.ArchivoImagen != null
+                        ? await _cloudinary.SubirImagenAsync(vm.ArchivoImagen)
+                        : await _cloudinary.SubirImagenDesdeUrlAsync(urlImagen!);
 
-                    var (imgUrl, imgPid) = await _cloudinary.SubirImagenAsync(vm.ArchivoImagen);
-                    musica.ImagenUrl = imgUrl;
-                    musica.ImagenPublicId = imgPid;
+                    var anteriorImg = musica.ImagenPublicId;
+                    musica.ImagenUrl = img.Url;
+                    musica.ImagenPublicId = img.PublicId;
+
+                    if (!string.IsNullOrEmpty(anteriorImg))
+                        await _cloudinary.EliminarRecursoAsync(anteriorImg, ResourceType.Image);
                 }
 
                 // Update géneros
@@ -188,8 +265,7 @@ namespace EcommerceApp.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error: {ex.Message}");
-                vm.GenerosDisponibles = await GetGenerosSelectList();
-                vm.ArtistasDisponibles = await GetArtistasSelectList();
+                await RellenarListasAsync(vm);
                 return View(vm);
             }
         }
@@ -221,6 +297,18 @@ namespace EcommerceApp.Controllers
         }
 
         // ── Helpers ──
+
+        // Solo se aceptan enlaces http/https absolutos.
+        private static bool EsUrlHttp(string? url) =>
+            Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+            (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+
+        private async Task RellenarListasAsync(MusicaViewModel vm)
+        {
+            vm.GenerosDisponibles = await GetGenerosSelectList();
+            vm.ArtistasDisponibles = await GetArtistasSelectList();
+        }
+
         private async Task<List<SelectListItem>> GetGenerosSelectList() =>
             await _db.Generos.OrderBy(g => g.Nombre)
                 .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Nombre })

@@ -19,6 +19,12 @@ namespace EcommerceApp.Models
         [Display(Name = "Imagen de portada")]
         public IFormFile? ArchivoImagen { get; set; }
 
+        [Display(Name = "Enlace de audio (URL)")]
+        public string? UrlAudio { get; set; }
+
+        [Display(Name = "Enlace de imagen (URL)")]
+        public string? UrlImagen { get; set; }
+
         public string? AudioUrlActual { get; set; }
         public string? ImagenUrlActual { get; set; }
 

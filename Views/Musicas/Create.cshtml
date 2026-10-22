@@ -42,6 +42,12 @@
                     </div>
                 </label>
                 <span asp-validation-for="ArchivoAudio" class="field-error"></span>
+                <div class="url-input-wrap">
+                    <span class="url-or">o pega un enlace de audio</span>
+                    <input asp-for="UrlAudio" type="url" class="form-control-dark" placeholder="https://ejemplo.com/cancion.mp3" />
+                    <span class="url-hint">Si subes un archivo, se usará el archivo y se ignorará el enlace.</span>
+                    <span asp-validation-for="UrlAudio" class="field-error"></span>
+                </div>
             </div>
 
             <!-- Imagen -->
@@ -58,6 +64,11 @@
                     </div>
                     <img id="imgPreview" src="" alt="preview" class="img-preview" style="display:none" />
                 </label>
+                <div class="url-input-wrap">
+                    <span class="url-or">o pega un enlace de imagen</span>
+                    <input asp-for="UrlImagen" type="url" class="form-control-dark" placeholder="https://ejemplo.com/portada.jpg" />
+                    <span asp-validation-for="UrlImagen" class="field-error"></span>
+                </div>
             </div>
         </div>
 
@@ -147,6 +158,9 @@
 .file-drop-sub  { font-size: .72rem; color: var(--txt-muted); }
 .file-selected  { display: flex; align-items: center; gap: 8px; color: #4ade80; font-size: .85rem; font-weight: 600; }
 .img-preview    { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; }
+.url-input-wrap { display: flex; flex-direction: column; gap: 6px; }
+.url-or { font-size: .72rem; color: var(--txt-muted); text-transform: uppercase; letter-spacing: .5px; }
+.url-hint { font-size: .72rem; color: var(--txt-muted); }
 
 /* Chips */
 .chips-container { display: flex; flex-wrap: wrap; gap: 8px; }

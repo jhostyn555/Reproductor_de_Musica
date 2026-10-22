@@ -1,210 +1,235 @@
 @model IEnumerable<EcommerceApp.Models.Musica>
 @{
-    ViewData["Title"]      = "Músicas";
+    ViewData["Title"] = "Músicas";
     ViewData["ActiveMenu"] = "Musicas";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var busqueda = ViewData["Q"]?.ToString() ?? string.Empty;
+    var total = Convert.ToInt32(ViewData["Total"] ?? Model.Count());
+    var hayFiltro = !string.IsNullOrEmpty(busqueda);
+    var vista = ViewData["Vista"]?.ToString() == "cuadricula" ? "cuadricula" : "tarjetas";
 }
 
 <div class="page-heading d-flex align-items-center justify-content-between flex-wrap gap-3">
     <div>
         <h1>Músicas</h1>
-        <p>Catálogo de canciones — @Model.Count() registros</p>
+        @if (hayFiltro)
+        {
+            <p>Resultados para «@busqueda» — @Model.Count() de @total registros</p>
+        }
+        else
+        {
+            <p>Catálogo de canciones — @Model.Count() registros</p>
+        }
     </div>
-    <a asp-controller="Musicas" asp-action="Create" class="btn-primary-action">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Nueva Canción
-    </a>
+    <a asp-controller="Musicas" asp-action="Create" class="music-new-btn">+ Nueva Canción</a>
 </div>
+
+<!-- Buscador: solo busca al pulsar Buscar o Enter -->
+<form method="get" asp-controller="Musicas" asp-action="Index" class="music-search" role="search">
+    <input type="hidden" name="vista" value="@vista" />
+    <svg class="music-search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" name="q" value="@busqueda" autocomplete="off"
+           class="music-search-input" placeholder="Buscar por canción, artista o género..." aria-label="Buscar canciones" />
+    @if (hayFiltro)
+    {
+        <a asp-controller="Musicas" asp-action="Index" asp-route-vista="@vista" class="music-search-clear">Limpiar</a>
+    }
+    <button type="submit" class="music-search-btn">Buscar</button>
+</form>
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert-custom alert-success-custom">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        @TempData["Success"]
-    </div>
+    <div class="alert-ok">✓ @TempData["Success"]</div>
 }
 @if (TempData["Error"] != null)
 {
-    <div class="alert-custom alert-error-custom">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        @TempData["Error"]
-    </div>
+    <div class="alert-err">@TempData["Error"]</div>
 }
 
 @if (!Model.Any())
 {
     <div class="empty-state">
-        <div class="empty-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-        </div>
-        <p class="empty-title">No hay canciones aún</p>
-        <p class="empty-sub">Crea tu primera canción usando el botón de arriba.</p>
+        @if (hayFiltro)
+        {
+            <p class="empty-title">Sin resultados</p>
+            <p class="empty-sub">No encontramos canciones que coincidan con «@busqueda».</p>
+        }
+        else
+        {
+            <p class="empty-title">No hay canciones aún</p>
+            <p class="empty-sub">Crea tu primera canción usando el botón de arriba.</p>
+        }
     </div>
 }
 else
 {
-    <div class="music-grid">
-        @foreach (var m in Model)
-        {
-            <div class="music-card">
-                <div class="music-cover">
-                    @if (!string.IsNullOrEmpty(m.ImagenUrl))
-                    {
-                        <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
-                    }
-                    else
-                    {
-                        <div class="music-cover-placeholder">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-                        </div>
-                    }
-                </div>
-                <div class="music-info">
-                    <div class="music-name">@m.Nombre</div>
-
-                    @if (m.MusicaArtistas.Any())
-                    {
-                        <div class="music-artists">
-                            @string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre))
-                        </div>
-                    }
-
-                    @if (m.MusicaGeneros.Any())
-                    {
-                        <div class="music-genres">
-                            @foreach (var mg in m.MusicaGeneros)
-                            {
-                                <span class="genre-badge">@mg.Genero.Nombre</span>
-                            }
-                        </div>
-                    }
-
-                    @if (!string.IsNullOrEmpty(m.AudioUrl))
-                    {
-                        <audio controls class="music-audio-player" preload="none">
-                            <source src="@m.AudioUrl" type="audio/mpeg" />
-                            Tu navegador no soporta audio.
-                        </audio>
-                    }
-
-                    <div class="music-meta">
-                        <span class="music-date">@m.CreadoEn.ToLocalTime().ToString("dd MMM yyyy")</span>
-                    </div>
-                </div>
-                <div class="music-actions">
-                    <a asp-controller="Musicas" asp-action="Edit" asp-route-id="@m.Id" class="action-btn edit-btn" title="Editar">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    </a>
-                    <form asp-controller="Musicas" asp-action="Delete" asp-route-id="@m.Id" method="post"
-                          onsubmit="return confirm('¿Eliminar «@m.Nombre»? Esta acción también eliminará los archivos de Cloudinary.')">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="action-btn delete-btn" title="Eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        }
+    <!-- Selector de visualización -->
+    <div class="view-switch">
+        <a asp-controller="Musicas" asp-action="Index" asp-route-q="@(hayFiltro ? busqueda : null)" asp-route-vista="tarjetas"
+           class="vs-btn @(vista == "tarjetas" ? "active" : "")">Tarjetas</a>
+        <a asp-controller="Musicas" asp-action="Index" asp-route-q="@(hayFiltro ? busqueda : null)" asp-route-vista="cuadricula"
+           class="vs-btn @(vista == "cuadricula" ? "active" : "")">Cuadrícula</a>
     </div>
+
+    @if (vista == "cuadricula")
+    {
+        <div class="mc-grid">
+            @foreach (var m in Model)
+            {
+                var artistas = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre));
+                <article class="mc mc-compact">
+                    <a class="mc-cover" asp-controller="Musicas" asp-action="Reproducir" asp-route-id="@m.Id" aria-label="Reproducir @m.Nombre">
+                        @if (!string.IsNullOrEmpty(m.ImagenUrl))
+                        {
+                            <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="mc-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6" /><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" /></svg>
+                            </div>
+                        }
+                    </a>
+                    <div class="mc-body">
+                        <div class="mc-name" title="@m.Nombre">@m.Nombre</div>
+                        @if (!string.IsNullOrEmpty(artistas))
+                        {
+                            <div class="mc-artists">@artistas</div>
+                        }
+                    </div>
+                    <div class="mc-actions">
+                        <a asp-controller="Musicas" asp-action="Edit" asp-route-id="@m.Id" class="act" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                        </a>
+                        <form asp-controller="Musicas" asp-action="Delete" asp-route-id="@m.Id" method="post"
+                              onsubmit="return confirm('¿Eliminar esta canción? También se eliminarán sus archivos de Cloudinary.')">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="act del" title="Eliminar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="mc-grid mc-grid-cards">
+            @foreach (var m in Model)
+            {
+                var artistas = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre));
+                <article class="mc">
+                    <a class="mc-cover" asp-controller="Musicas" asp-action="Reproducir" asp-route-id="@m.Id" aria-label="Reproducir @m.Nombre">
+                        @if (!string.IsNullOrEmpty(m.ImagenUrl))
+                        {
+                            <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="mc-placeholder">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6" /><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" /></svg>
+                            </div>
+                        }
+                    </a>
+                    <div class="mc-body">
+                        <div class="mc-name" title="@m.Nombre">@m.Nombre</div>
+                        @if (!string.IsNullOrEmpty(artistas))
+                        {
+                            <div class="mc-artists">@artistas</div>
+                        }
+                        @if (m.MusicaGeneros.Any())
+                        {
+                            <div class="mc-genres">
+                                @foreach (var mg in m.MusicaGeneros)
+                                {
+                                    <span class="gbadge">@mg.Genero.Nombre</span>
+                                }
+                            </div>
+                        }
+                        <div class="mc-date">@m.CreadoEn.ToLocalTime().ToString("dd MMM yyyy")</div>
+                    </div>
+                    <div class="mc-actions">
+                        <a asp-controller="Musicas" asp-action="Edit" asp-route-id="@m.Id" class="act" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                        </a>
+                        <form asp-controller="Musicas" asp-action="Delete" asp-route-id="@m.Id" method="post"
+                              onsubmit="return confirm('¿Eliminar esta canción? También se eliminarán sus archivos de Cloudinary.')">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="act del" title="Eliminar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            }
+        </div>
+    }
 }
 
 @section Scripts {
 <style>
-/* ── Musicas Index ── */
-.btn-primary-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-2));
-    color: #fff;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: opacity .2s, transform .2s;
-    text-decoration: none;
-    box-shadow: 0 4px 16px var(--clr-primary-glow);
-}
-.btn-primary-action:hover { opacity: .88; transform: translateY(-1px); color: #fff; }
+    .music-new-btn {
+        display: inline-flex; align-items: center; padding: 10px 18px; border-radius: 10px;
+        font-weight: 600; font-size: .88rem; color: #fff; text-decoration: none;
+        background: linear-gradient(135deg, var(--clr-primary, #7c5cff), var(--clr-primary-2, #a78bfa));
+    }
+    .music-search {
+        display: flex; align-items: center; gap: 10px; margin: 22px 0;
+        background: var(--bg-card); border: 1px solid var(--border-col); border-radius: 12px; padding: 6px 6px 6px 14px;
+    }
+    .music-search:focus-within { border-color: var(--clr-primary, #7c5cff); }
+    .music-search-icon { color: var(--txt-muted); flex-shrink: 0; }
+    .music-search-input {
+        flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+        color: var(--txt-primary); font-size: .9rem; padding: 8px 0;
+    }
+    .music-search-clear { font-size: .8rem; color: var(--txt-secondary); padding: 6px 10px; text-decoration: none; white-space: nowrap; }
+    .music-search-btn {
+        padding: 9px 16px; border-radius: 9px; font-size: .82rem; font-weight: 600; color: #fff;
+        background: linear-gradient(135deg, var(--clr-primary, #7c5cff), var(--clr-primary-2, #a78bfa));
+        border: none; cursor: pointer; white-space: nowrap;
+    }
+    @@media (max-width: 520px) { .music-search-btn { display: none; } }
 
-.alert-custom {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 18px; border-radius: 10px; margin-bottom: 20px;
-    font-size: .875rem; font-weight: 500;
-}
-.alert-success-custom { background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); color: #4ade80; }
-.alert-error-custom   { background: rgba(239,68,68,.1);  border: 1px solid rgba(239,68,68,.3);  color: #f87171; }
+    .alert-ok  { padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; background: rgba(34,197,94,.1); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+    .alert-err { padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; background: rgba(248,113,113,.1); color: #f87171; border: 1px solid rgba(248,113,113,.3); }
 
-.empty-state {
-    display: flex; flex-direction: column; align-items: center;
-    padding: 80px 40px; background: var(--bg-card);
-    border: 1px solid var(--border-col); border-radius: 20px;
-    text-align: center;
-}
-.empty-icon {
-    width: 80px; height: 80px; border-radius: 50%;
-    background: linear-gradient(135deg, rgba(139,92,246,.2), rgba(99,102,241,.15));
-    border: 2px solid rgba(139,92,246,.3);
-    display: flex; align-items: center; justify-content: center;
-    color: var(--clr-primary); margin-bottom: 20px;
-}
-.empty-title { font-size: 1.1rem; font-weight: 700; color: var(--txt-primary); margin-bottom: 6px; }
-.empty-sub   { font-size: .875rem; color: var(--txt-secondary); }
+    .view-switch {
+        display: inline-flex; gap: 4px; padding: 4px; margin-bottom: 22px;
+        background: var(--bg-card); border: 1px solid var(--border-col); border-radius: 10px;
+    }
+    .vs-btn { padding: 7px 16px; border-radius: 7px; font-size: .82rem; color: var(--txt-secondary); text-decoration: none; }
+    .vs-btn.active { background: rgba(124,92,255,.2); color: var(--txt-primary); }
 
-.music-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 18px;
-}
-.music-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-col);
-    border-radius: var(--radius);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: border-color var(--transition), box-shadow var(--transition);
-}
-.music-card:hover {
-    border-color: var(--clr-primary);
-    box-shadow: var(--shadow-card);
-}
-.music-cover {
-    width: 100%; aspect-ratio: 1;
-    background: rgba(139,92,246,.08);
-    overflow: hidden;
-    max-height: 180px;
-}
-.music-cover img { width: 100%; height: 100%; object-fit: cover; }
-.music-cover-placeholder {
-    width: 100%; height: 180px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--txt-muted);
-}
-.music-info { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-.music-name { font-size: .95rem; font-weight: 700; color: var(--txt-primary); line-height: 1.3; }
-.music-artists { font-size: .8rem; color: var(--clr-accent); font-weight: 500; }
-.music-genres { display: flex; flex-wrap: wrap; gap: 5px; }
-.genre-badge {
-    font-size: .7rem; font-weight: 600; padding: 3px 10px;
-    background: rgba(139,92,246,.15); border: 1px solid rgba(139,92,246,.3);
-    border-radius: 20px; color: #c4b5fd;
-}
-.music-audio-player { width: 100%; height: 36px; border-radius: 6px; }
-.music-meta { font-size: .72rem; color: var(--txt-muted); margin-top: auto; }
-.music-actions {
-    display: flex; gap: 8px; padding: 10px 16px 14px;
-    border-top: 1px solid var(--border-col);
-}
-.action-btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-col);
-    background: transparent; cursor: pointer; transition: background .2s, border-color .2s, color .2s;
-    color: var(--txt-secondary); text-decoration: none;
-}
-.edit-btn:hover   { background: rgba(99,102,241,.15); border-color: rgba(99,102,241,.4); color: #a5b4fc; }
-.delete-btn:hover { background: rgba(239,68,68,.12);  border-color: rgba(239,68,68,.4);  color: #f87171; }
+    /* Sin bordes: las portadas son solo imágenes */
+    .mc-grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+    .mc-grid.mc-grid-cards { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .mc-compact { }
+    .mc-grid:not(.mc-grid-cards) { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+    .mc { background: transparent; border: none; min-width: 0; }
+    .mc-cover {
+        display: block; position: relative; aspect-ratio: 1 / 1; border-radius: 12px;
+        overflow: hidden; background: rgba(255,255,255,.04); border: none; outline: none;
+    }
+    .mc-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+    .mc-cover:hover img { transform: scale(1.04); }
+    .mc-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--txt-muted); }
+    .mc-body { padding: 12px 2px 0; min-width: 0; }
+    .mc-name { font-weight: 700; font-size: .95rem; color: var(--txt-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mc-artists { font-size: .83rem; color: #22d3ee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .mc-genres { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .gbadge { font-size: .7rem; padding: 3px 9px; border-radius: 999px; background: rgba(124,92,255,.18); color: #c4b5fd; }
+    .mc-date { font-size: .74rem; color: var(--txt-muted); margin-top: 8px; }
+    .mc-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .mc-actions form { margin: 0; }
+    .act {
+        width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 8px; border: 1px solid var(--border-col); background: transparent;
+        color: var(--txt-secondary); cursor: pointer; text-decoration: none;
+    }
+    .act:hover { color: var(--txt-primary); background: rgba(255,255,255,.05); }
+    .act.del:hover { color: #f87171; border-color: rgba(248,113,113,.4); }
 </style>
 }
