@@ -1,0 +1,61 @@
+﻿@model IEnumerable<EcommerceApp.Models.Anuncio>
+@{
+    ViewData["Title"] = "Publicidad";
+    ViewData["ActiveMenu"] = "Publicidad";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-heading d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+        <h1>Publicidad</h1>
+        <p>Anuncios que aparecen en el inicio de los clientes — @Model.Count() registros</p>
+    </div>
+    <a asp-action="Create" class="an-btn">+ Nuevo anuncio</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="an-ok">@TempData["Success"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="an-empty">No hay anuncios. Mientras no existan anuncios activos, la sección no aparece en el inicio.</div>
+}
+else
+{
+    <div class="an-list">
+        @foreach (var a in Model)
+        {
+            <div class="an-row">
+                <img src="@a.ImagenUrl" alt="" class="an-thumb" />
+                <div class="an-info">
+                    <div class="an-title">@a.Titulo</div>
+                    <div class="an-sub">@(a.Activo ? "Activo" : "Inactivo") · @a.CreadoEn.ToLocalTime().ToString("dd MMM yyyy")</div>
+                </div>
+                <form asp-action="ToggleActivo" asp-route-id="@a.Id" method="post">
+                    <button type="submit" class="an-act">@(a.Activo ? "Desactivar" : "Activar")</button>
+                </form>
+                <form asp-action="Delete" asp-route-id="@a.Id" method="post" onsubmit="return confirm('¿Eliminar este anuncio?')">
+                    <button type="submit" class="an-act del">Eliminar</button>
+                </form>
+            </div>
+        }
+    </div>
+}
+
+<style>
+    .an-btn { padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: .88rem; color: #fff; text-decoration: none; background: linear-gradient(135deg, var(--clr-primary, #7c5cff), var(--clr-primary-2, #a78bfa)); }
+    .an-ok { padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; background: rgba(34,197,94,.1); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+    .an-empty { padding: 40px; text-align: center; color: var(--txt-muted); border: 1px dashed var(--border-col); border-radius: 12px; }
+    .an-list { display: grid; gap: 12px; }
+    .an-row { display: flex; align-items: center; gap: 14px; padding: 12px; background: var(--bg-card); border: 1px solid var(--border-col); border-radius: 12px; }
+    .an-thumb { width: 120px; height: 66px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+    .an-info { flex: 1; min-width: 0; }
+    .an-title { font-weight: 600; color: var(--txt-primary); }
+    .an-sub { font-size: .76rem; color: var(--txt-muted); margin-top: 3px; }
+    .an-row form { margin: 0; }
+    .an-act { padding: 7px 12px; border-radius: 8px; font-size: .8rem; color: var(--txt-secondary); background: transparent; border: 1px solid var(--border-col); cursor: pointer; }
+    .an-act:hover { color: var(--txt-primary); background: rgba(255,255,255,.05); }
+    .an-act.del:hover { color: #f87171; border-color: rgba(248,113,113,.4); }
+</style>

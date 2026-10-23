@@ -1,0 +1,31 @@
+﻿@model EcommerceApp.Models.CancionMenuVM
+@{
+    var m = Model.Musica;
+    var retorno = Context.Request.Path.ToString() + Context.Request.QueryString.ToString();
+}
+<div class="mm">
+    <button type="button" class="mm-trigger" data-mm-toggle aria-label="Más opciones" aria-expanded="false" title="Más opciones">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="12" cy="19" r="2" /></svg>
+    </button>
+    <div class="mm-pop" data-mm-pop role="menu" hidden>
+        <form method="post" asp-controller="User" asp-action="ToggleFavorito" asp-route-id="@m.Id" class="mm-form">
+            <input type="hidden" name="returnUrl" value="@retorno" />
+            <button type="submit" class="mm-item" role="menuitem">
+                @(Model.EsFavorito ? "Quitar de favoritos" : "Agregar a favoritos")
+            </button>
+        </form>
+
+        @if (Model.PrimerArtistaId.HasValue)
+        {
+            <a class="mm-item" role="menuitem" asp-controller="User" asp-action="Artista" asp-route-id="@Model.PrimerArtistaId.Value">Ir al artista</a>
+        }
+        else
+        {
+            <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Ir al artista <small>Sin artista</small></span>
+        }
+
+        <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Agregar a playlist <small>Próximamente</small></span>
+        <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Agregar a lista <small>Próximamente</small></span>
+        <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Ir al álbum <small>Próximamente</small></span>
+    </div>
+</div>

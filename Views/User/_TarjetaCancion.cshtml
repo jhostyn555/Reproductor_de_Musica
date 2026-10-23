@@ -1,0 +1,29 @@
+﻿@model EcommerceApp.Models.CancionMenuVM
+@{
+    var m = Model.Musica;
+    var artistas = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre));
+}
+<article class="mu-card">
+    <a class="mu-cover-link" asp-controller="User" asp-action="Escuchar" asp-route-id="@m.Id" aria-label="Escuchar @m.Nombre">
+        <div class="mu-cover">
+            @if (!string.IsNullOrEmpty(m.ImagenUrl))
+            {
+                <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
+            }
+            else
+            {
+                <div class="mu-placeholder">♪</div>
+            }
+        </div>
+    </a>
+    <div class="mu-meta">
+        <div class="mu-text">
+            <a class="mu-name" asp-controller="User" asp-action="Escuchar" asp-route-id="@m.Id" title="@m.Nombre">@m.Nombre</a>
+            @if (!string.IsNullOrEmpty(artistas))
+            {
+                <div class="mu-artists">@artistas</div>
+            }
+        </div>
+        @await Html.PartialAsync("_CancionMenu", Model)
+    </div>
+</article>

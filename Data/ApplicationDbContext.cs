@@ -11,6 +11,8 @@ namespace EcommerceApp.Data
         public DbSet<Musica> Musicas { get; set; }
         public DbSet<Genero> Generos { get; set; }
         public DbSet<Artista> Artistas { get; set; }
+        public DbSet<Anuncio> Anuncios { get; set; }
+        public DbSet<Favorito> Favoritos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,17 +38,26 @@ namespace EcommerceApp.Data
             modelBuilder.Entity<MusicaArtista>()
                 .HasOne(ma => ma.Artista).WithMany(a => a.MusicaArtistas).HasForeignKey(ma => ma.ArtistaId);
 
+            // Favoritos: un usuario no puede marcar la misma canción dos veces
+            modelBuilder.Entity<Favorito>()
+                .HasIndex(f => new { f.UserId, f.MusicaId })
+                .IsUnique();
+            modelBuilder.Entity<Favorito>()
+                .HasOne(f => f.Musica).WithMany().HasForeignKey(f => f.MusicaId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Favorito>()
+                .HasOne(f => f.User).WithMany().HasForeignKey(f => f.UserId).OnDelete(DeleteBehavior.Cascade);
+
             // Seed géneros
             modelBuilder.Entity<Genero>().HasData(
-                new Genero { Id = 1,  Nombre = "Pop" },
-                new Genero { Id = 2,  Nombre = "Rock" },
-                new Genero { Id = 3,  Nombre = "Hip-Hop" },
-                new Genero { Id = 4,  Nombre = "Electrónica" },
-                new Genero { Id = 5,  Nombre = "Reggaetón" },
-                new Genero { Id = 6,  Nombre = "Jazz" },
-                new Genero { Id = 7,  Nombre = "Clásica" },
-                new Genero { Id = 8,  Nombre = "R&B" },
-                new Genero { Id = 9,  Nombre = "Metal" },
+                new Genero { Id = 1, Nombre = "Pop" },
+                new Genero { Id = 2, Nombre = "Rock" },
+                new Genero { Id = 3, Nombre = "Hip-Hop" },
+                new Genero { Id = 4, Nombre = "Electrónica" },
+                new Genero { Id = 5, Nombre = "Reggaetón" },
+                new Genero { Id = 6, Nombre = "Jazz" },
+                new Genero { Id = 7, Nombre = "Clásica" },
+                new Genero { Id = 8, Nombre = "R&B" },
+                new Genero { Id = 9, Nombre = "Metal" },
                 new Genero { Id = 10, Nombre = "Salsa" },
                 new Genero { Id = 11, Nombre = "Cumbia" },
                 new Genero { Id = 12, Nombre = "Bachata" },
@@ -57,15 +68,15 @@ namespace EcommerceApp.Data
 
             // Seed artistas
             modelBuilder.Entity<Artista>().HasData(
-                new Artista { Id = 1,  Nombre = "Bad Bunny" },
-                new Artista { Id = 2,  Nombre = "Taylor Swift" },
-                new Artista { Id = 3,  Nombre = "Drake" },
-                new Artista { Id = 4,  Nombre = "Shakira" },
-                new Artista { Id = 5,  Nombre = "The Weeknd" },
-                new Artista { Id = 6,  Nombre = "J Balvin" },
-                new Artista { Id = 7,  Nombre = "Ariana Grande" },
-                new Artista { Id = 8,  Nombre = "Daddy Yankee" },
-                new Artista { Id = 9,  Nombre = "Ozuna" },
+                new Artista { Id = 1, Nombre = "Bad Bunny" },
+                new Artista { Id = 2, Nombre = "Taylor Swift" },
+                new Artista { Id = 3, Nombre = "Drake" },
+                new Artista { Id = 4, Nombre = "Shakira" },
+                new Artista { Id = 5, Nombre = "The Weeknd" },
+                new Artista { Id = 6, Nombre = "J Balvin" },
+                new Artista { Id = 7, Nombre = "Ariana Grande" },
+                new Artista { Id = 8, Nombre = "Daddy Yankee" },
+                new Artista { Id = 9, Nombre = "Ozuna" },
                 new Artista { Id = 10, Nombre = "Billie Eilish" }
             );
         }

@@ -1,0 +1,147 @@
+﻿@model EcommerceApp.Models.Musica
+@{
+    ViewData["Title"] = Model.Nombre;
+    ViewData["ActiveMenu"] = "Musicas";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    var artistas = string.Join(", ", Model.MusicaArtistas.Select(ma => ma.Artista.Nombre));
+    var tieneImagen = !string.IsNullOrEmpty(Model.ImagenUrl);
+}
+
+<div class="np-wrap">
+    @if (tieneImagen)
+    {
+        <div class="np-bg" style="background-image: url('@Model.ImagenUrl');"></div>
+    }
+
+    <a asp-controller="User" asp-action="Musicas" class="np-back">← Volver a músicas</a>
+
+    <div class="np-layout">
+        <div class="np-cover-wrap">
+            @if (tieneImagen)
+            {
+                <img class="np-cover" src="@Model.ImagenUrl" alt="@Model.Nombre" />
+            }
+            else
+            {
+                <div class="np-cover-placeholder">♪</div>
+            }
+        </div>
+
+        <div class="np-info">
+            <div class="np-kicker">Reproduciendo</div>
+            <h1 class="np-title">@Model.Nombre</h1>
+            @if (!string.IsNullOrEmpty(artistas))
+            {
+                <div class="np-artists">@artistas</div>
+            }
+            @if (Model.MusicaGeneros.Any())
+            {
+                <div class="np-genres">
+                    @foreach (var mg in Model.MusicaGeneros)
+                    {
+                        <span class="np-gbadge">@mg.Genero.Nombre</span>
+                    }
+                </div>
+            }
+
+            <div class="np-controls">
+                @if (!string.IsNullOrEmpty(Model.AudioUrl))
+                {
+                    <audio id="npAudio" src="@Model.AudioUrl" preload="auto" autoplay></audio>
+                }
+                <div class="np-progress" id="npBar">
+                    <div class="np-progress-fill" id="npFill"></div>
+                </div>
+                <div class="np-times">
+                    <span id="npCur">0:00</span>
+                    <span id="npDur">0:00</span>
+                </div>
+                <div class="np-buttons">
+                    <button type="button" id="npPlay" class="np-play" aria-label="Reproducir o pausar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<style>
+    .np-wrap { position: relative; max-width: 980px; margin: 0 auto; padding-bottom: 40px; }
+    .np-bg {
+        position: absolute; top: -60px; left: -40px; right: -40px; height: 460px; z-index: 0;
+        background-size: cover; background-position: center;
+        filter: blur(50px) brightness(.35); pointer-events: none;
+    }
+    .np-back { position: relative; z-index: 1; display: inline-block; margin-bottom: 22px; color: var(--up-txt-sub); text-decoration: none; font-size: .88rem; }
+    .np-layout { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(260px, 380px) 1fr; gap: 44px; align-items: center; }
+    .np-cover-wrap { border-radius: 16px; overflow: hidden; aspect-ratio: 1 / 1; box-shadow: 0 30px 60px rgba(0,0,0,.55); background: rgba(255,255,255,.05); }
+    .np-cover { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .np-cover-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: var(--up-txt-muted); }
+    .np-kicker { text-transform: uppercase; font-size: .72rem; letter-spacing: .12em; color: var(--up-txt-muted); }
+    .np-title { font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 800; color: var(--up-txt); margin: 8px 0 6px; line-height: 1.15; }
+    .np-artists { color: #22d3ee; font-size: 1.05rem; }
+    .np-genres { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .np-gbadge { font-size: .75rem; padding: 4px 11px; border-radius: 999px; background: rgba(124,92,255,.2); color: #c4b5fd; }
+    .np-controls { margin-top: 34px; }
+    .np-progress { height: 6px; border-radius: 6px; background: rgba(255,255,255,.14); cursor: pointer; overflow: hidden; }
+    .np-progress-fill { height: 100%; width: 0; border-radius: 6px; background: linear-gradient(90deg, var(--up-primary), var(--up-accent)); }
+    .np-times { display: flex; justify-content: space-between; font-size: .75rem; color: var(--up-txt-muted); margin-top: 6px; }
+    .np-buttons { display: flex; justify-content: center; margin-top: 20px; }
+    .np-play {
+        width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer;
+        background: #fff; color: #000; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .np-play:hover { transform: scale(1.04); }
+    @@media (max-width: 760px) {
+        .np-layout { grid-template-columns: 1fr; }
+        .np-cover-wrap { max-width: 320px; width: 100%; margin: 0 auto; }
+        .np-info { text-align: center; }
+        .np-genres { justify-content: center; }
+    }
+</style>
+<script>
+    (function () {
+        var audio = document.getElementById('npAudio');
+        var btn = document.getElementById('npPlay');
+        var bar = document.getElementById('npBar');
+        var fill = document.getElementById('npFill');
+        var cur = document.getElementById('npCur');
+        var dur = document.getElementById('npDur');
+        if (!audio) return;
+
+        var ICON_PLAY = '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+        var ICON_PAUSE = '<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+
+        function setIcon(playing) { btn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY; }
+        function fmt(s) {
+            if (!isFinite(s)) return '0:00';
+            var m = Math.floor(s / 60), r = Math.floor(s % 60);
+            return m + ':' + (r < 10 ? '0' : '') + r;
+        }
+
+        audio.addEventListener('play', function () { setIcon(true); });
+        audio.addEventListener('pause', function () { setIcon(false); });
+        audio.addEventListener('ended', function () { setIcon(false); });
+        audio.addEventListener('loadedmetadata', function () { dur.textContent = fmt(audio.duration); });
+        audio.addEventListener('timeupdate', function () {
+            cur.textContent = fmt(audio.currentTime);
+            fill.style.width = (audio.duration ? (audio.currentTime / audio.duration) * 100 : 0) + '%';
+        });
+
+        btn.addEventListener('click', function () {
+            if (audio.paused) audio.play().catch(function () {}); else audio.pause();
+        });
+        bar.addEventListener('click', function (e) {
+            var r = bar.getBoundingClientRect();
+            if (audio.duration) audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+        });
+
+        // Reproducción automática al abrir la página (el navegador puede bloquearla; en ese caso queda el botón).
+        setIcon(false);
+        audio.play().then(function () { setIcon(true); }).catch(function () { setIcon(false); });
+    })();
+</script>
+}

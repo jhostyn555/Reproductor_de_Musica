@@ -23,585 +23,662 @@ namespace EcommerceApp.Migrations
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("EcommerceApp.Models.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+            {
+                b.Property<string>("Id")
+                    .HasColumnType("text");
 
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
+                b.Property<int>("AccessFailedCount")
+                    .HasColumnType("integer");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("text");
+                b.Property<string>("Address")
+                    .HasColumnType("text");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
+                b.Property<string>("ConcurrencyStamp")
+                    .IsConcurrencyToken()
+                    .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                b.Property<string>("Email")
+                    .HasMaxLength(256)
+                    .HasColumnType("character varying(256)");
 
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
+                b.Property<bool>("EmailConfirmed")
+                    .HasColumnType("boolean");
 
-                    b.Property<string>("FullName")
-                        .HasColumnType("text");
+                b.Property<string>("FullName")
+                    .HasColumnType("text");
 
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
+                b.Property<bool>("LockoutEnabled")
+                    .HasColumnType("boolean");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
+                b.Property<DateTimeOffset?>("LockoutEnd")
+                    .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                b.Property<string>("NormalizedEmail")
+                    .HasMaxLength(256)
+                    .HasColumnType("character varying(256)");
 
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                b.Property<string>("NormalizedUserName")
+                    .HasMaxLength(256)
+                    .HasColumnType("character varying(256)");
 
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
+                b.Property<string>("PasswordHash")
+                    .HasColumnType("text");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                b.Property<string>("PhoneNumber")
+                    .HasColumnType("text");
 
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
+                b.Property<bool>("PhoneNumberConfirmed")
+                    .HasColumnType("boolean");
 
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
+                b.Property<string>("SecurityStamp")
+                    .HasColumnType("text");
 
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
+                b.Property<bool>("TwoFactorEnabled")
+                    .HasColumnType("boolean");
 
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                b.Property<string>("UserName")
+                    .HasMaxLength(256)
+                    .HasColumnType("character varying(256)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
+                b.HasIndex("NormalizedEmail")
+                    .HasDatabaseName("EmailIndex");
 
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
+                b.HasIndex("NormalizedUserName")
+                    .IsUnique()
+                    .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
-                });
+                b.ToTable("AspNetUsers", (string)null);
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.Artista", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)");
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasMaxLength(120)
+                    .HasColumnType("character varying(120)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Artistas");
+                b.ToTable("Artistas");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Nombre = "Bad Bunny"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Nombre = "Taylor Swift"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Nombre = "Drake"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Nombre = "Shakira"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Nombre = "The Weeknd"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Nombre = "J Balvin"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Nombre = "Ariana Grande"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Nombre = "Daddy Yankee"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Nombre = "Ozuna"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Nombre = "Billie Eilish"
-                        });
-                });
+                b.HasData(
+                    new
+                    {
+                        Id = 1,
+                        Nombre = "Bad Bunny"
+                    },
+                    new
+                    {
+                        Id = 2,
+                        Nombre = "Taylor Swift"
+                    },
+                    new
+                    {
+                        Id = 3,
+                        Nombre = "Drake"
+                    },
+                    new
+                    {
+                        Id = 4,
+                        Nombre = "Shakira"
+                    },
+                    new
+                    {
+                        Id = 5,
+                        Nombre = "The Weeknd"
+                    },
+                    new
+                    {
+                        Id = 6,
+                        Nombre = "J Balvin"
+                    },
+                    new
+                    {
+                        Id = 7,
+                        Nombre = "Ariana Grande"
+                    },
+                    new
+                    {
+                        Id = 8,
+                        Nombre = "Daddy Yankee"
+                    },
+                    new
+                    {
+                        Id = 9,
+                        Nombre = "Ozuna"
+                    },
+                    new
+                    {
+                        Id = 10,
+                        Nombre = "Billie Eilish"
+                    });
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.Genero", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("character varying(80)");
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasMaxLength(80)
+                    .HasColumnType("character varying(80)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Generos");
+                b.ToTable("Generos");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Nombre = "Pop"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Nombre = "Rock"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Nombre = "Hip-Hop"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Nombre = "Electrónica"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Nombre = "Reggaetón"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Nombre = "Jazz"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Nombre = "Clásica"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Nombre = "R&B"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Nombre = "Metal"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Nombre = "Salsa"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Nombre = "Cumbia"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Nombre = "Bachata"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Nombre = "Trap"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Nombre = "Indie"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Nombre = "Folk"
-                        });
-                });
+                b.HasData(
+                    new
+                    {
+                        Id = 1,
+                        Nombre = "Pop"
+                    },
+                    new
+                    {
+                        Id = 2,
+                        Nombre = "Rock"
+                    },
+                    new
+                    {
+                        Id = 3,
+                        Nombre = "Hip-Hop"
+                    },
+                    new
+                    {
+                        Id = 4,
+                        Nombre = "Electrónica"
+                    },
+                    new
+                    {
+                        Id = 5,
+                        Nombre = "Reggaetón"
+                    },
+                    new
+                    {
+                        Id = 6,
+                        Nombre = "Jazz"
+                    },
+                    new
+                    {
+                        Id = 7,
+                        Nombre = "Clásica"
+                    },
+                    new
+                    {
+                        Id = 8,
+                        Nombre = "R&B"
+                    },
+                    new
+                    {
+                        Id = 9,
+                        Nombre = "Metal"
+                    },
+                    new
+                    {
+                        Id = 10,
+                        Nombre = "Salsa"
+                    },
+                    new
+                    {
+                        Id = 11,
+                        Nombre = "Cumbia"
+                    },
+                    new
+                    {
+                        Id = 12,
+                        Nombre = "Bachata"
+                    },
+                    new
+                    {
+                        Id = 13,
+                        Nombre = "Trap"
+                    },
+                    new
+                    {
+                        Id = 14,
+                        Nombre = "Indie"
+                    },
+                    new
+                    {
+                        Id = 15,
+                        Nombre = "Folk"
+                    });
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.Musica", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AudioPublicId")
-                        .HasColumnType("text");
+                b.Property<string>("AudioPublicId")
+                    .HasColumnType("text");
 
-                    b.Property<string>("AudioUrl")
-                        .HasColumnType("text");
+                b.Property<string>("AudioUrl")
+                    .HasColumnType("text");
 
-                    b.Property<DateTime>("CreadoEn")
-                        .HasColumnType("timestamp with time zone");
+                b.Property<DateTime>("CreadoEn")
+                    .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ImagenPublicId")
-                        .HasColumnType("text");
+                b.Property<string>("ImagenPublicId")
+                    .HasColumnType("text");
 
-                    b.Property<string>("ImagenUrl")
-                        .HasColumnType("text");
+                b.Property<string>("ImagenUrl")
+                    .HasColumnType("text");
 
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnType("character varying(200)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Musicas");
-                });
+                b.ToTable("Musicas");
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.MusicaArtista", b =>
-                {
-                    b.Property<int>("MusicaId")
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("MusicaId")
+                    .HasColumnType("integer");
 
-                    b.Property<int>("ArtistaId")
-                        .HasColumnType("integer");
+                b.Property<int>("ArtistaId")
+                    .HasColumnType("integer");
 
-                    b.HasKey("MusicaId", "ArtistaId");
+                b.HasKey("MusicaId", "ArtistaId");
 
-                    b.HasIndex("ArtistaId");
+                b.HasIndex("ArtistaId");
 
-                    b.ToTable("MusicaArtista");
-                });
+                b.ToTable("MusicaArtista");
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.MusicaGenero", b =>
-                {
-                    b.Property<int>("MusicaId")
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("MusicaId")
+                    .HasColumnType("integer");
 
-                    b.Property<int>("GeneroId")
-                        .HasColumnType("integer");
+                b.Property<int>("GeneroId")
+                    .HasColumnType("integer");
 
-                    b.HasKey("MusicaId", "GeneroId");
+                b.HasKey("MusicaId", "GeneroId");
 
-                    b.HasIndex("GeneroId");
+                b.HasIndex("GeneroId");
 
-                    b.ToTable("MusicaGenero");
-                });
+                b.ToTable("MusicaGenero");
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Category")
-                        .HasColumnType("text");
+                b.Property<string>("Category")
+                    .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnType("character varying(500)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
+                b.Property<string>("ImageUrl")
+                    .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
 
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)");
+                b.Property<decimal>("Price")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
 
-                    b.Property<int>("Stock")
-                        .HasColumnType("integer");
+                b.Property<int>("Stock")
+                    .HasColumnType("integer");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                b.Property<DateTime?>("UpdatedAt")
+                    .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Products");
-                });
+                b.ToTable("Products");
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+            {
+                b.Property<string>("Id")
+                    .HasColumnType("text");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
+                b.Property<string>("ConcurrencyStamp")
+                    .IsConcurrencyToken()
+                    .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                b.Property<string>("Name")
+                    .HasMaxLength(256)
+                    .HasColumnType("character varying(256)");
 
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                b.Property<string>("NormalizedName")
+                    .HasMaxLength(256)
+                    .HasColumnType("character varying(256)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
+                b.HasIndex("NormalizedName")
+                    .IsUnique()
+                    .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
-                });
+                b.ToTable("AspNetRoles", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                b.Property<string>("ClaimType")
+                    .HasColumnType("text");
 
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                b.Property<string>("ClaimValue")
+                    .HasColumnType("text");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                b.Property<string>("RoleId")
+                    .IsRequired()
+                    .HasColumnType("text");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
+                b.ToTable("AspNetRoleClaims", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                b.Property<string>("ClaimType")
+                    .HasColumnType("text");
 
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                b.Property<string>("ClaimValue")
+                    .HasColumnType("text");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                b.Property<string>("UserId")
+                    .IsRequired()
+                    .HasColumnType("text");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
+                b.ToTable("AspNetUserClaims", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+            {
+                b.Property<string>("LoginProvider")
+                    .HasColumnType("text");
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
+                b.Property<string>("ProviderKey")
+                    .HasColumnType("text");
 
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("text");
+                b.Property<string>("ProviderDisplayName")
+                    .HasColumnType("text");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                b.Property<string>("UserId")
+                    .IsRequired()
+                    .HasColumnType("text");
 
-                    b.HasKey("LoginProvider", "ProviderKey");
+                b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasIndex("UserId");
+                b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
+                b.ToTable("AspNetUserLogins", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
+            {
+                b.Property<string>("UserId")
+                    .HasColumnType("text");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("text");
+                b.Property<string>("RoleId")
+                    .HasColumnType("text");
 
-                    b.HasKey("UserId", "RoleId");
+                b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId");
+                b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
+                b.ToTable("AspNetUserRoles", (string)null);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
+            {
+                b.Property<string>("UserId")
+                    .HasColumnType("text");
 
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                b.Property<string>("LoginProvider")
+                    .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
+                b.Property<string>("Name")
+                    .HasColumnType("text");
 
-                    b.Property<string>("Value")
-                        .HasColumnType("text");
+                b.Property<string>("Value")
+                    .HasColumnType("text");
 
-                    b.HasKey("UserId", "LoginProvider", "Name");
+                b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
-                });
+                b.ToTable("AspNetUserTokens", (string)null);
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.MusicaArtista", b =>
-                {
-                    b.HasOne("EcommerceApp.Models.Artista", "Artista")
-                        .WithMany("MusicaArtistas")
-                        .HasForeignKey("ArtistaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("EcommerceApp.Models.Artista", "Artista")
+                    .WithMany("MusicaArtistas")
+                    .HasForeignKey("ArtistaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("EcommerceApp.Models.Musica", "Musica")
-                        .WithMany("MusicaArtistas")
-                        .HasForeignKey("MusicaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("EcommerceApp.Models.Musica", "Musica")
+                    .WithMany("MusicaArtistas")
+                    .HasForeignKey("MusicaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Artista");
+                b.Navigation("Artista");
 
-                    b.Navigation("Musica");
-                });
+                b.Navigation("Musica");
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.MusicaGenero", b =>
-                {
-                    b.HasOne("EcommerceApp.Models.Genero", "Genero")
-                        .WithMany("MusicaGeneros")
-                        .HasForeignKey("GeneroId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("EcommerceApp.Models.Genero", "Genero")
+                    .WithMany("MusicaGeneros")
+                    .HasForeignKey("GeneroId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("EcommerceApp.Models.Musica", "Musica")
-                        .WithMany("MusicaGeneros")
-                        .HasForeignKey("MusicaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                b.HasOne("EcommerceApp.Models.Musica", "Musica")
+                    .WithMany("MusicaGeneros")
+                    .HasForeignKey("MusicaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.Navigation("Genero");
+                b.Navigation("Genero");
 
-                    b.Navigation("Musica");
-                });
+                b.Navigation("Musica");
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    .WithMany()
+                    .HasForeignKey("RoleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("EcommerceApp.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("EcommerceApp.Models.ApplicationUser", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("EcommerceApp.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("EcommerceApp.Models.ApplicationUser", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            {
+                b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    .WithMany()
+                    .HasForeignKey("RoleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
-                    b.HasOne("EcommerceApp.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                b.HasOne("EcommerceApp.Models.ApplicationUser", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("EcommerceApp.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+            {
+                b.HasOne("EcommerceApp.Models.ApplicationUser", null)
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.Artista", b =>
-                {
-                    b.Navigation("MusicaArtistas");
-                });
+            {
+                b.Navigation("MusicaArtistas");
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.Genero", b =>
-                {
-                    b.Navigation("MusicaGeneros");
-                });
+            {
+                b.Navigation("MusicaGeneros");
+            });
 
             modelBuilder.Entity("EcommerceApp.Models.Musica", b =>
-                {
-                    b.Navigation("MusicaArtistas");
+            {
+                b.Navigation("MusicaArtistas");
 
-                    b.Navigation("MusicaGeneros");
-                });
+                b.Navigation("MusicaGeneros");
+            });
+            modelBuilder.Entity("EcommerceApp.Models.Anuncio", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                b.Property<bool>("Activo")
+                    .HasColumnType("boolean");
+
+                b.Property<DateTime>("CreadoEn")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("Enlace")
+                    .HasColumnType("text");
+
+                b.Property<string>("ImagenUrl")
+                    .HasColumnType("text");
+
+                b.Property<string>("Titulo")
+                    .IsRequired()
+                    .HasMaxLength(120)
+                    .HasColumnType("character varying(120)");
+
+                b.HasKey("Id");
+
+                b.ToTable("Anuncios");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.Favorito", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                b.Property<DateTime>("AgregadoEn")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<int>("MusicaId")
+                    .HasColumnType("integer");
+
+                b.Property<string>("UserId")
+                    .IsRequired()
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.HasIndex("MusicaId");
+
+                b.HasIndex("UserId", "MusicaId")
+                    .IsUnique();
+
+                b.ToTable("Favoritos");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.Favorito", b =>
+            {
+                b.HasOne("EcommerceApp.Models.Musica", "Musica")
+                    .WithMany()
+                    .HasForeignKey("MusicaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("EcommerceApp.Models.ApplicationUser", "User")
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Musica");
+
+                b.Navigation("User");
+            });
+
 #pragma warning restore 612, 618
         }
     }

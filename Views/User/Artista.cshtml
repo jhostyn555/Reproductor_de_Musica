@@ -1,0 +1,42 @@
+﻿@model EcommerceApp.Models.MusicaBrowseViewModel
+@{
+    ViewData["Title"] = ViewData["ArtistaNombre"]?.ToString() ?? "Artista";
+    ViewData["ActiveMenu"] = "Musicas";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<a asp-controller="User" asp-action="Musicas" class="mu-back">← Volver a músicas</a>
+
+<div class="up-page-heading">
+    <h1>@ViewData["ArtistaNombre"]</h1>
+    <p>Canciones del artista</p>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="mu-ok">@TempData["Success"]</div>
+}
+
+@if (!Model.Todas.Any())
+{
+    <div class="mu-empty">Este artista todavía no tiene canciones.</div>
+}
+else
+{
+    <div class="mu-grid">
+        @foreach (var m in Model.Todas)
+        {
+            @await Html.PartialAsync("_TarjetaCancion", new EcommerceApp.Models.CancionMenuVM
+            {
+                Musica = m,
+                EsFavorito = Model.FavoritosIds.Contains(m.Id),
+                PrimerArtistaId = m.MusicaArtistas.FirstOrDefault()?.ArtistaId
+            })
+        }
+    </div>
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="~/css/music-user.css" asp-append-version="true" />
+    <script src="~/js/cancion-menu.js" asp-append-version="true"></script>
+}

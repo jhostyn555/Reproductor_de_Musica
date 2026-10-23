@@ -1,0 +1,72 @@
+﻿@model EcommerceApp.Models.MusicaBrowseViewModel
+@{
+    var qs = string.IsNullOrEmpty(Model.Q) ? "" : "&q=" + Uri.EscapeDataString(Model.Q);
+    var hayCanciones = Model.Vista == "genero" ? Model.Grupos.Any() : Model.Todas.Any();
+}
+
+<form method="get" class="mu-search" role="search">
+    <input type="hidden" name="vista" value="@Model.Vista" />
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+    <input type="search" name="q" value="@Model.Q" class="mu-search-input" placeholder="Buscar por canción, artista o género..." aria-label="Buscar" autocomplete="off" />
+    @if (!string.IsNullOrEmpty(Model.Q))
+    {
+        <a class="mu-clear" href="?vista=@Model.Vista">Limpiar</a>
+    }
+    <button type="submit" class="mu-search-btn">Buscar</button>
+</form>
+
+<div class="mu-switch">
+    <a class="mu-vs @(Model.Vista == "genero" ? "active" : "")" href="?vista=genero@(qs)">Por género</a>
+    <a class="mu-vs @(Model.Vista == "cuadricula" ? "active" : "")" href="?vista=cuadricula@(qs)">Cuadrícula</a>
+</div>
+
+@if (!hayCanciones)
+{
+    <div class="mu-empty">
+        @if (string.IsNullOrEmpty(Model.Q))
+        {
+            <span>Todavía no hay canciones disponibles.</span>
+        }
+        else
+        {
+            <span>Sin resultados para «@Model.Q».</span>
+        }
+    </div>
+}
+else if (Model.Vista == "genero")
+{
+    foreach (var grupo in Model.Grupos)
+    {
+        <section class="mu-genero">
+            <h2 class="mu-genero-titulo">
+                @grupo.Nombre
+                <span class="mu-count">@grupo.Canciones.Count @(grupo.Canciones.Count == 1 ? "canción" : "canciones")</span>
+            </h2>
+            <div class="mu-grid">
+                @foreach (var m in grupo.Canciones)
+                {
+                    @await Html.PartialAsync("_TarjetaCancion", new EcommerceApp.Models.CancionMenuVM
+                    {
+                        Musica = m,
+                        EsFavorito = Model.FavoritosIds.Contains(m.Id),
+                        PrimerArtistaId = m.MusicaArtistas.FirstOrDefault()?.ArtistaId
+                    })
+                }
+            </div>
+        </section>
+    }
+}
+else
+{
+    <div class="mu-grid">
+        @foreach (var m in Model.Todas)
+        {
+            @await Html.PartialAsync("_TarjetaCancion", new EcommerceApp.Models.CancionMenuVM
+            {
+                Musica = m,
+                EsFavorito = Model.FavoritosIds.Contains(m.Id),
+                PrimerArtistaId = m.MusicaArtistas.FirstOrDefault()?.ArtistaId
+            })
+        }
+    </div>
+}
