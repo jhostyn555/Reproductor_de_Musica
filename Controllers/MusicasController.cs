@@ -118,7 +118,7 @@ namespace EcommerceApp.Controllers
 
             try
             {
-                var musica = new Musica { Nombre = vm.Nombre };
+                var musica = new Musica { Nombre = vm.Nombre, DuracionSegundos = vm.DuracionSegundos };
 
                 // Si hay archivo, tiene prioridad sobre el enlace.
                 var audio = vm.ArchivoAudio != null
@@ -217,6 +217,7 @@ namespace EcommerceApp.Controllers
             try
             {
                 musica.Nombre = vm.Nombre;
+                if (vm.DuracionSegundos is > 0) musica.DuracionSegundos = vm.DuracionSegundos;
 
                 // Subir primero el nuevo recurso y borrar el anterior después,
                 // así un fallo en la subida no deja la canción sin audio.
@@ -268,6 +269,21 @@ namespace EcommerceApp.Controllers
                 await RellenarListasAsync(vm);
                 return View(vm);
             }
+        }
+
+        // POST: Musicas/GuardarDuracion (lo llama el navegador cuando una canción no tiene duración)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuardarDuracion(int id, int segundos)
+        {
+            var musica = await _db.Musicas.FindAsync(id);
+            if (musica == null) return NotFound();
+            if (segundos > 0)
+            {
+                musica.DuracionSegundos = segundos;
+                await _db.SaveChangesAsync();
+            }
+            return Ok();
         }
 
         // POST: Musicas/Delete/5

@@ -105,7 +105,7 @@
 .mu-grid {
     display: grid;
     gap: 22px;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
 .mu-card {
@@ -325,4 +325,10 @@
     font-size: .88rem;
     color: var(--up-txt-sub);
     text-decoration: none;
+}
+
+/* Cuadrícula compacta (igual que en el admin) */
+.mu-grid.mu-grid-compact {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
 }

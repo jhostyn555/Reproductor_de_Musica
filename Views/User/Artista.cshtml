@@ -30,7 +30,8 @@ else
             {
                 Musica = m,
                 EsFavorito = Model.FavoritosIds.Contains(m.Id),
-                PrimerArtistaId = m.MusicaArtistas.FirstOrDefault()?.ArtistaId
+                PrimerArtistaId = m.MusicaArtistas.FirstOrDefault()?.ArtistaId,
+                        PrimerAlbumId = m.AlbumMusicas.FirstOrDefault()?.AlbumId
             })
         }
     </div>

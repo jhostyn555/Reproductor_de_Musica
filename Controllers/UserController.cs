@@ -94,6 +94,18 @@ namespace EcommerceApp.Controllers
             return View(musica);
         }
 
+        // GET: User/Album/5 — tracklist del álbum (solo lectura)
+        public async Task<IActionResult> Album(int id)
+        {
+            var album = await _db.Albumes
+                .Include(a => a.Artista)
+                .Include(a => a.AlbumMusicas).ThenInclude(am => am.Musica).ThenInclude(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (album == null) return NotFound();
+            return View(album);
+        }
+
         public IActionResult Historial() => View();
         public IActionResult Novedades() => View();
         public IActionResult Perfil() => View();
@@ -104,6 +116,7 @@ namespace EcommerceApp.Controllers
             await _db.Musicas
                 .Include(m => m.MusicaGeneros).ThenInclude(mg => mg.Genero)
                 .Include(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
+                .Include(m => m.AlbumMusicas)
                 .OrderBy(m => m.Nombre)
                 .ToListAsync();
 

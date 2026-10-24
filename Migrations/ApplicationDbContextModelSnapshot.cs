@@ -277,6 +277,9 @@ namespace EcommerceApp.Migrations
                 b.Property<DateTime>("CreadoEn")
                     .HasColumnType("timestamp with time zone");
 
+                b.Property<int?>("DuracionSegundos")
+                    .HasColumnType("integer");
+
                 b.Property<string>("ImagenPublicId")
                     .HasColumnType("text");
 
@@ -677,6 +680,104 @@ namespace EcommerceApp.Migrations
                 b.Navigation("Musica");
 
                 b.Navigation("User");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.Album", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                b.Property<int>("ArtistaId")
+                    .HasColumnType("integer");
+
+                b.Property<DateTime>("FechaCreacion")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("ImagenPublicId")
+                    .HasColumnType("text");
+
+                b.Property<string>("ImagenUrl")
+                    .HasColumnType("text");
+
+                b.Property<string>("Titulo")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnType("character varying(200)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("ArtistaId");
+
+                b.ToTable("Albumes");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.AlbumMusica", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                b.Property<int>("AlbumId")
+                    .HasColumnType("integer");
+
+                b.Property<int>("MusicaId")
+                    .HasColumnType("integer");
+
+                b.Property<int>("Orden")
+                    .HasColumnType("integer");
+
+                b.HasKey("Id");
+
+                b.HasIndex("MusicaId");
+
+                b.HasIndex("AlbumId", "MusicaId")
+                    .IsUnique();
+
+                b.ToTable("AlbumMusicas");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.Album", b =>
+            {
+                b.HasOne("EcommerceApp.Models.Artista", "Artista")
+                    .WithMany()
+                    .HasForeignKey("ArtistaId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
+
+                b.Navigation("Artista");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.AlbumMusica", b =>
+            {
+                b.HasOne("EcommerceApp.Models.Album", "Album")
+                    .WithMany("AlbumMusicas")
+                    .HasForeignKey("AlbumId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("EcommerceApp.Models.Musica", "Musica")
+                    .WithMany("AlbumMusicas")
+                    .HasForeignKey("MusicaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Album");
+
+                b.Navigation("Musica");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.Musica", b =>
+            {
+                b.Navigation("AlbumMusicas");
+            });
+            modelBuilder.Entity("EcommerceApp.Models.Album", b =>
+            {
+                b.Navigation("AlbumMusicas");
             });
 
 #pragma warning restore 612, 618

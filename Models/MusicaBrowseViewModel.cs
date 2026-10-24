@@ -23,5 +23,6 @@
         public Musica Musica { get; set; } = null!;
         public bool EsFavorito { get; set; }
         public int? PrimerArtistaId { get; set; }
+        public int? PrimerAlbumId { get; set; }
     }
 }

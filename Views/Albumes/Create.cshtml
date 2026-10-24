@@ -1,0 +1,11 @@
+﻿@model EcommerceApp.Models.AlbumViewModel
+@{
+    ViewData["Title"] = "Nuevo álbum";
+    ViewData["ActiveMenu"] = "Albumes";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="page-heading">
+    <h1>Nuevo álbum</h1>
+    <p>Elige el artista y luego sus canciones, en el orden del tracklist</p>
+</div>
+@await Html.PartialAsync("_AlbumForm", Model)

@@ -26,6 +26,13 @@
 
         <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Agregar a playlist <small>Próximamente</small></span>
         <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Agregar a lista <small>Próximamente</small></span>
-        <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Ir al álbum <small>Próximamente</small></span>
+        @if (Model.PrimerAlbumId.HasValue)
+        {
+            <a class="mm-item" role="menuitem" asp-controller="User" asp-action="Album" asp-route-id="@Model.PrimerAlbumId.Value">Ir al álbum</a>
+        }
+        else
+        {
+            <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Ir al álbum <small>Sin álbum</small></span>
+        }
     </div>
 </div>

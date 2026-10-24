@@ -1,0 +1,12 @@
+@model EcommerceApp.Models.Album
+@{
+    ViewData["Title"] = Model.Titulo;
+    ViewData["ActiveMenu"] = "Albumes";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<a asp-action="Index" class="ab-back">← Volver a álbumes</a>
+
+@await Html.PartialAsync("_ReproductorAlbum", Model)
+
+<script src="~/js/album-player.js" asp-append-version="true"></script>

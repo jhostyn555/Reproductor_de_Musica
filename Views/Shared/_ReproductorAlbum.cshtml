@@ -1,0 +1,107 @@
+@model EcommerceApp.Models.Album
+@using EcommerceApp.Models
+@{
+    var pistas = Model.AlbumMusicas.OrderBy(am => am.Orden).ToList();
+    var portadaAlbum = Model.ImagenUrl;
+    var datos = pistas.Select(am => new
+    {
+        id = am.Musica.Id,
+        nombre = am.Musica.Nombre,
+        artista = string.Join(", ", am.Musica.MusicaArtistas.Select(ma => ma.Artista.Nombre)),
+        audio = am.Musica.AudioUrl,
+        imagen = string.IsNullOrEmpty(am.Musica.ImagenUrl) ? portadaAlbum : am.Musica.ImagenUrl,
+        duracion = am.Musica.DuracionSegundos
+    }).ToList();
+}
+<link rel="stylesheet" href="~/css/album-player.css" asp-append-version="true" />
+
+<div id="album-root" class="ab-root" data-tracks="@System.Text.Json.JsonSerializer.Serialize(datos)">
+
+    <header class="ab-head">
+        <div class="ab-cover">
+            @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+            {
+                <img src="@Model.ImagenUrl" alt="@Model.Titulo" />
+            }
+            else
+            {
+                <div class="ab-placeholder">♪</div>
+            }
+        </div>
+        <div class="ab-info">
+            <div class="ab-kind">@Model.Tipo</div>
+            <h1 class="ab-title">@Model.Titulo</h1>
+            <div class="ab-artist">@Model.Artista.Nombre</div>
+            <div class="ab-meta">
+                @Model.CantidadCanciones @(Model.CantidadCanciones == 1 ? "canción" : "canciones")
+                · @DuracionFormato.Total(Model.DuracionTotalSegundos)
+                · @Model.FechaCreacion.ToString("dd/MM/yyyy")
+            </div>
+        </div>
+    </header>
+
+    <div class="ab-actions">
+        <button type="button" class="ab-play-all" id="ab-play-all" aria-label="Reproducir álbum">▶</button>
+        <div class="ab-viewswitch" role="group" aria-label="Vista de canciones">
+            <button type="button" class="ab-vs active" id="ab-view-lista" aria-pressed="true">Lista</button>
+            <button type="button" class="ab-vs" id="ab-view-mini" aria-pressed="false">Miniaturas</button>
+        </div>
+    </div>
+
+    <div id="ab-lista">
+        <div class="ab-list-head"><span>#</span><span>Canción</span><span>Duración</span><span></span></div>
+        <ol class="ab-list">
+            @foreach (var am in pistas)
+            {
+                <li class="ab-item ab-row" data-track-id="@am.Musica.Id">
+                    <span class="ab-num">@am.Orden</span>
+                    <button type="button" class="ab-thumb" data-action="ahora" title="Reproducir ahora">
+                        <img src="@(string.IsNullOrEmpty(am.Musica.ImagenUrl) ? portadaAlbum : am.Musica.ImagenUrl)" alt="" loading="lazy" />
+                        <span class="ab-thumb-play">▶</span>
+                    </button>
+                    <div class="ab-name" data-action="cola" title="Agregar a la cola">
+                        <div class="ab-name-title">@am.Musica.Nombre</div>
+                        <div class="ab-name-artist">@string.Join(", ", am.Musica.MusicaArtistas.Select(ma => ma.Artista.Nombre))</div>
+                    </div>
+                    <span class="ab-dur">@DuracionFormato.Mmss(am.Musica.DuracionSegundos)</span>
+                    <button type="button" class="ab-add" data-action="cola" title="Agregar a la cola">+</button>
+                </li>
+            }
+        </ol>
+    </div>
+
+    <div id="ab-miniaturas" class="ab-tiles" hidden>
+        @foreach (var am in pistas)
+        {
+            <div class="ab-item ab-tile" data-track-id="@am.Musica.Id">
+                <button type="button" class="ab-tile-img" data-action="ahora" title="Reproducir ahora">
+                    <img src="@(string.IsNullOrEmpty(am.Musica.ImagenUrl) ? portadaAlbum : am.Musica.ImagenUrl)" alt="" loading="lazy" />
+                    <span class="ab-thumb-play">▶</span>
+                </button>
+                <div class="ab-tile-name" data-action="cola" title="Agregar a la cola">@am.Musica.Nombre</div>
+                <div class="ab-tile-sub">@DuracionFormato.Mmss(am.Musica.DuracionSegundos)</div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="ab-bar" id="ab-bar" hidden>
+    <div class="ab-now">
+        <img id="ab-now-img" alt="" />
+        <div>
+            <div id="ab-now-title" class="ab-now-title">—</div>
+            <div id="ab-now-artist" class="ab-now-artist"></div>
+        </div>
+    </div>
+    <div class="ab-ctrl">
+        <button type="button" id="ab-prev" title="Anterior (pila de historial)">⏮</button>
+        <button type="button" id="ab-toggle" title="Reproducir / pausar">▶</button>
+        <button type="button" id="ab-next" title="Siguiente (cola)">⏭</button>
+    </div>
+    <div class="ab-progress">
+        <span id="ab-cur">0:00</span>
+        <input type="range" id="ab-seek" min="0" max="100" value="0" />
+        <span id="ab-dur">0:00</span>
+    </div>
+    <div class="ab-queue-info">En cola: <b id="ab-qn">0</b> · Historial: <b id="ab-hn">0</b></div>
+</div>

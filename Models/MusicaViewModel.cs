@@ -25,6 +25,9 @@ namespace EcommerceApp.Models
         [Display(Name = "Enlace de imagen (URL)")]
         public string? UrlImagen { get; set; }
 
+        // Se rellena en el navegador a partir del audio (segundos)
+        public int? DuracionSegundos { get; set; }
+
         public string? AudioUrlActual { get; set; }
         public string? ImagenUrlActual { get; set; }
 

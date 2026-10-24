@@ -13,6 +13,8 @@ namespace EcommerceApp.Data
         public DbSet<Artista> Artistas { get; set; }
         public DbSet<Anuncio> Anuncios { get; set; }
         public DbSet<Favorito> Favoritos { get; set; }
+        public DbSet<Album> Albumes { get; set; }
+        public DbSet<AlbumMusica> AlbumMusicas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +48,16 @@ namespace EcommerceApp.Data
                 .HasOne(f => f.Musica).WithMany().HasForeignKey(f => f.MusicaId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Favorito>()
                 .HasOne(f => f.User).WithMany().HasForeignKey(f => f.UserId).OnDelete(DeleteBehavior.Cascade);
+
+            // Álbumes: un artista no se puede borrar si tiene álbumes; al borrar un álbum se borra su tracklist
+            modelBuilder.Entity<Album>()
+                .HasOne(a => a.Artista).WithMany().HasForeignKey(a => a.ArtistaId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<AlbumMusica>()
+                .HasOne(am => am.Album).WithMany(a => a.AlbumMusicas).HasForeignKey(am => am.AlbumId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<AlbumMusica>()
+                .HasOne(am => am.Musica).WithMany(m => m.AlbumMusicas).HasForeignKey(am => am.MusicaId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<AlbumMusica>()
+                .HasIndex(am => new { am.AlbumId, am.MusicaId }).IsUnique();
 
             // Seed géneros
             modelBuilder.Entity<Genero>().HasData(

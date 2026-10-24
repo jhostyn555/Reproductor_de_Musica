@@ -12,6 +12,7 @@
 
 <div class="form-card">
     <form asp-controller="Musicas" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" id="editForm">
+            <input type="hidden" asp-for="DuracionSegundos" />
         @Html.AntiForgeryToken()
 
         <div class="form-group">
@@ -256,3 +257,5 @@ document.getElementById('editForm').addEventListener('submit', function () {
 });
 </script>
 }
+
+<script src="~/js/duracion-audio.js" asp-append-version="true"></script>

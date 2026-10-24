@@ -1,0 +1,11 @@
+﻿@model EcommerceApp.Models.AlbumViewModel
+@{
+    ViewData["Title"] = "Editar álbum";
+    ViewData["ActiveMenu"] = "Albumes";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="page-heading">
+    <h1>Editar álbum</h1>
+    <p>@Model.Titulo</p>
+</div>
+@await Html.PartialAsync("_AlbumForm", Model)
