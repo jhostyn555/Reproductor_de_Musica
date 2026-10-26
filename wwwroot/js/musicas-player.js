@@ -32,7 +32,7 @@
     var fullLike = $('mp-full-like'), seek = $('mp-seek'), curEl = $('mp-cur'), durEl = $('mp-dur');
     var cerrar = $('mp-close');
     var comBtn = $('mp-com-btn'), comPanel = $('mp-com'), comCerrar = $('mp-com-cerrar');
-    var comLista = $('mp-com-lista'), comForm = $('mp-com-form'), comTexto = $('mp-com-texto');
+    var comForm = $('mp-com-form'), comTexto = $('mp-com-texto');
 
     function actual() { return idx >= 0 ? secuencia[idx] : null; }
 
@@ -141,24 +141,8 @@
         return div;
     }
 
-    function cargarComentarios() {
-        var t = actual();
-        if (!t) return;
-        comLista.innerHTML = '<p class="mp-com-vacio">Cargando…</p>';
-        fetch(urlComentarios + '?musicaId=' + t.id, { credentials: 'same-origin' })
-            .then(function (r) { if (!r.ok) throw new Error('error'); return r.json(); })
-            .then(function (lista) {
-                comLista.innerHTML = '';
-                if (!lista.length) {
-                    comLista.innerHTML = '<p class="mp-com-vacio">Sé el primero en comentar.</p>';
-                    return;
-                }
-                lista.forEach(function (c) { comLista.appendChild(itemComentario(c)); });
-            })
-            .catch(function () {
-                comLista.innerHTML = '<p class="mp-com-vacio">No se pudieron cargar los comentarios.</p>';
-            });
-    }
+    // El cliente solo escribe comentarios; no se muestran los de otros usuarios.
+    function cargarComentarios() { }
 
     comBtn.addEventListener('click', function () {
         if (!autenticado) { window.location.href = urlLogin; return; }
@@ -180,10 +164,8 @@
         })
             .then(function (r) { if (!r.ok) throw new Error('error'); return r.json(); })
             .then(function (c) {
-                var vacio = comLista.querySelector('.mp-com-vacio');
-                if (vacio) vacio.remove();
-                comLista.insertBefore(itemComentario(c), comLista.firstChild);
                 comTexto.value = '';
+            comBtn.textContent = '✓ Comentario publicado';
             })
             .catch(function () { });
     });

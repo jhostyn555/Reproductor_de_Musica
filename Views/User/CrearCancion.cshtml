@@ -1,0 +1,53 @@
+﻿@model EcommerceApp.Models.CrearCancionViewModel
+@{
+    ViewData["Title"] = "Crear canción";
+    ViewData["ActiveMenu"] = "Perfil";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<a asp-action="Perfil" class="cc-back">← Volver al perfil</a>
+<div class="up-page-heading">
+    <h1>Crear canción</h1>
+    <p>Tu canción se publicará cuando el administrador la apruebe</p>
+</div>
+
+<form asp-action="CrearCancion" method="post" enctype="multipart/form-data" class="cc-form">
+    <div asp-validation-summary="ModelOnly" class="cc-err"></div>
+
+    <label asp-for="Nombre">Nombre de la canción</label>
+    <input asp-for="Nombre" class="cc-input" maxlength="200" />
+    <span asp-validation-for="Nombre" class="cc-err"></span>
+
+    <label asp-for="ArtistaId">Artista</label>
+    <select asp-for="ArtistaId" asp-items="Model.ArtistasDisponibles" class="cc-input">
+        <option value="">— Selecciona un artista —</option>
+    </select>
+    <span asp-validation-for="ArtistaId" class="cc-err"></span>
+
+    <label asp-for="GeneroId">Género</label>
+    <select asp-for="GeneroId" asp-items="Model.GenerosDisponibles" class="cc-input">
+        <option value="">— Selecciona un género —</option>
+    </select>
+    <span asp-validation-for="GeneroId" class="cc-err"></span>
+
+    <label>Archivo de audio</label>
+    <input asp-for="ArchivoAudio" type="file" accept="audio/*" class="cc-input" />
+    <span asp-validation-for="ArchivoAudio" class="cc-err"></span>
+
+    <label>Portada (opcional)</label>
+    <input asp-for="ArchivoImagen" type="file" accept="image/*" class="cc-input" />
+
+    <div class="cc-acciones">
+        <button type="submit" class="cc-btn">Enviar para aprobación</button>
+    </div>
+</form>
+
+<style>
+    .cc-back { display: inline-block; margin-bottom: 18px; color: var(--up-txt-sub); text-decoration: none; font-size: .88rem; }
+    .cc-form { max-width: 560px; display: grid; gap: 6px; }
+    .cc-form label { font-size: .82rem; color: var(--up-txt-sub); margin-top: 12px; }
+    .cc-input { padding: 10px 12px; border-radius: 9px; background: transparent; border: 1px solid var(--up-border); color: var(--up-txt); }
+    .cc-err { color: #f87171; font-size: .8rem; }
+    .cc-acciones { margin-top: 18px; }
+    .cc-btn { padding: 11px 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; color: #04121a; background: linear-gradient(135deg, var(--up-primary), var(--up-accent)); }
+</style>

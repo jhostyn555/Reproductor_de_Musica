@@ -222,7 +222,7 @@ namespace EcommerceApp.Controllers
         public async Task<IActionResult> CancionesDeArtista(int artistaId)
         {
             var canciones = await _db.Musicas
-                .Where(m => m.MusicaArtistas.Any(ma => ma.ArtistaId == artistaId))
+                .Where(m => m.Estado == "Aprobada" && m.MusicaArtistas.Any(ma => ma.ArtistaId == artistaId))
                 .OrderBy(m => m.Nombre)
                 .Select(m => new { m.Id, m.Nombre, m.DuracionSegundos, m.AudioUrl })
                 .ToListAsync();

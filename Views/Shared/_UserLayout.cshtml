@@ -1,3 +1,4 @@
+@inject EcommerceApp.Data.ApplicationDbContext Db
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -142,11 +143,23 @@
         </nav>
 
         <!-- User profile footer -->
+        @{
+            var avatarFooter = User.Identity?.IsAuthenticated == true
+                ? Db.Users.Where(u => u.UserName == User.Identity!.Name).Select(u => u.AvatarUrl).FirstOrDefault()
+                : null;
+        }
         <div class="up-sidebar-footer">
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <div class="up-user-avatar">
-                    @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                    @if (!string.IsNullOrEmpty(avatarFooter))
+                    {
+                        <img src="@avatarFooter" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block" />
+                    }
+                    else
+                    {
+                        @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                    }
                 </div>
                 <div class="up-user-info">
                     <span class="up-user-name">@User.Identity.Name</span>

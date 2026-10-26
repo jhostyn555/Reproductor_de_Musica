@@ -2,6 +2,7 @@ using System.Security.Claims;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Identity;
 using EcommerceApp.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -103,7 +104,8 @@ namespace EcommerceApp.Controllers
                 .Include(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (musica == null) return NotFound();
+            // Una canción pendiente solo la puede escuchar quien la envió.
+            if (musica == null || (musica.Estado != "Aprobada" && musica.CreadoPorId != UserId)) return NotFound();
             return View(musica);
         }
 
@@ -198,7 +200,7 @@ namespace EcommerceApp.Controllers
             var fin = DateTime.Now.Date.AddDays(1).ToUniversalTime();
 
             var canciones = await _db.Musicas
-                .Where(m => m.CreadoEn >= inicio && m.CreadoEn < fin)
+                .Where(m => m.Estado == "Aprobada" && m.CreadoEn >= inicio && m.CreadoEn < fin)
                 .Include(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
                 .OrderBy(m => m.Nombre)
                 .ToListAsync();
@@ -294,6 +296,84 @@ namespace EcommerceApp.Controllers
             return RedirectToAction(nameof(Perfil));
         }
 
+        // GET: User/CrearCancion — el cliente envía una canción para aprobación
+        public async Task<IActionResult> CrearCancion()
+        {
+            var vm = new CrearCancionViewModel();
+            await RellenarCrearCancionAsync(vm);
+            ViewData["ActiveMenu"] = "Perfil";
+            return View(vm);
+        }
+
+        // POST: User/CrearCancion
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequestSizeLimit(52428800)] // 50 MB
+        public async Task<IActionResult> CrearCancion(CrearCancionViewModel vm)
+        {
+            var uid = UserId;
+            if (uid == null) return Challenge();
+
+            vm.Nombre = (vm.Nombre ?? string.Empty).Trim();
+            if (vm.Nombre.Length == 0) ModelState.AddModelError("Nombre", "El nombre es obligatorio.");
+            if (vm.ArtistaId == null) ModelState.AddModelError("ArtistaId", "Selecciona un artista.");
+            if (vm.GeneroId == null) ModelState.AddModelError("GeneroId", "Selecciona un género.");
+            if (vm.ArchivoAudio == null || vm.ArchivoAudio.Length == 0)
+                ModelState.AddModelError("ArchivoAudio", "Sube el archivo de audio.");
+
+            if (!ModelState.IsValid)
+            {
+                await RellenarCrearCancionAsync(vm);
+                ViewData["ActiveMenu"] = "Perfil";
+                return View(vm);
+            }
+
+            try
+            {
+                var audio = await _cloudinary.SubirAudioAsync(vm.ArchivoAudio!);
+                var musica = new Musica
+                {
+                    Nombre = vm.Nombre,
+                    AudioUrl = audio.Url,
+                    AudioPublicId = audio.PublicId,
+                    Estado = "Pendiente",
+                    CreadoPorId = uid
+                };
+
+                if (vm.ArchivoImagen != null && vm.ArchivoImagen.Length > 0)
+                {
+                    var img = await _cloudinary.SubirImagenAsync(vm.ArchivoImagen);
+                    musica.ImagenUrl = img.Url;
+                    musica.ImagenPublicId = img.PublicId;
+                }
+
+                _db.Musicas.Add(musica);
+                await _db.SaveChangesAsync();
+
+                _db.Set<MusicaArtista>().Add(new MusicaArtista { MusicaId = musica.Id, ArtistaId = vm.ArtistaId!.Value });
+                _db.Set<MusicaGenero>().Add(new MusicaGenero { MusicaId = musica.Id, GeneroId = vm.GeneroId!.Value });
+                await _db.SaveChangesAsync();
+
+                TempData["Success"] = "Canción enviada. Será pública cuando el administrador la apruebe.";
+                return RedirectToAction(nameof(Perfil));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "No se pudo subir la canción: " + ex.Message);
+                await RellenarCrearCancionAsync(vm);
+                ViewData["ActiveMenu"] = "Perfil";
+                return View(vm);
+            }
+        }
+
+        private async Task RellenarCrearCancionAsync(CrearCancionViewModel vm)
+        {
+            vm.ArtistasDisponibles = await _db.Artistas.OrderBy(a => a.Nombre)
+                .Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Nombre }).ToListAsync();
+            vm.GenerosDisponibles = await _db.Generos.OrderBy(g => g.Nombre)
+                .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Nombre }).ToListAsync();
+        }
+
         // GET: User/Comentarios?musicaId=5 — comentarios de una canción (JSON)
         [HttpGet]
         public async Task<IActionResult> Comentarios(int musicaId)
@@ -345,6 +425,7 @@ namespace EcommerceApp.Controllers
 
         private async Task<List<Musica>> CargarMusicasAsync() =>
             await _db.Musicas
+                .Where(m => m.Estado == "Aprobada")
                 .Include(m => m.MusicaGeneros).ThenInclude(mg => mg.Genero)
                 .Include(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
                 .Include(m => m.AlbumMusicas)

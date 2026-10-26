@@ -14,7 +14,7 @@ namespace EcommerceApp.Controllers
         public IActionResult Comentarios() => View();
         public IActionResult Estadisticas() => View();
         public IActionResult Publicidad() => RedirectToAction("Index", "Anuncios");
-        public IActionResult Notificaciones() => View();
+        public IActionResult Notificaciones() => RedirectToAction("Index", "Notificaciones");
         public IActionResult Usuarios() => View();
     }
 }

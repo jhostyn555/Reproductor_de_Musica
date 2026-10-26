@@ -286,6 +286,13 @@ namespace EcommerceApp.Migrations
                 b.Property<int?>("DuracionSegundos")
                     .HasColumnType("integer");
 
+                b.Property<string>("CreadoPorId")
+                    .HasColumnType("text");
+
+                b.Property<string>("Estado")
+                    .IsRequired()
+                    .HasColumnType("text");
+
                 b.Property<string>("ImagenPublicId")
                     .HasColumnType("text");
 
