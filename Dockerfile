@@ -1,4 +1,4 @@
-# Etapa 1: Compilación (Build)
+# Etapa 1: Compilación (Build con .NET 10)
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
@@ -10,7 +10,7 @@ RUN dotnet restore "EcommerceApp.csproj"
 COPY . .
 RUN dotnet publish "EcommerceApp.csproj" -c Release -o /app/publish
 
-# Etapa 2: Ejecución (Runtime)
+# Etapa 2: Ejecución (Runtime con .NET 10)
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
