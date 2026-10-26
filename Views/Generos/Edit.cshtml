@@ -1,0 +1,23 @@
+﻿@model EcommerceApp.Models.Genero
+@{
+    ViewData["Title"] = "Editar género";
+    ViewData["ActiveMenu"] = "GenerosYArtistas";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/gestion-musica.css" asp-append-version="true" />
+
+<div class="page-heading">
+    <h1>Editar género</h1>
+    <p>Cambia el nombre del género</p>
+</div>
+
+<form asp-controller="Generos" asp-action="Edit" asp-route-id="@Model.Id" method="post" class="ga-form">
+    <div asp-validation-summary="ModelOnly" class="ga-err"></div>
+    <label>Nombre</label>
+    <input asp-for="Nombre" class="ga-input" maxlength="80" />
+    <span asp-validation-for="Nombre" class="ga-err"></span>
+    <div class="ga-actions-form">
+        <a asp-controller="Generos" asp-action="Index" class="ga-cancel">Cancelar</a>
+        <button type="submit" class="ga-btn">Guardar cambios</button>
+    </div>
+</form>

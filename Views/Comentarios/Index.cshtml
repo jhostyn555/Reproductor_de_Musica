@@ -1,0 +1,160 @@
+﻿@model IEnumerable<EcommerceApp.Models.ComentariosPorCancion>
+@{
+    ViewData["Title"] = "Comentarios";
+    ViewData["ActiveMenu"] = "Comentarios";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-heading">
+    <h1>Comentarios</h1>
+    <p>Agrupados por canción</p>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="cm-vacio">Todavía no hay comentarios. Aparecerán aquí cuando los clientes comenten una canción.</div>
+}
+else
+{
+    @foreach (var grupo in Model)
+    {
+        var artistas = string.Join(", ", grupo.Musica.MusicaArtistas.Select(ma => ma.Artista.Nombre));
+        <section class="cm-grupo">
+            <header class="cm-head">
+                @if (!string.IsNullOrEmpty(grupo.Musica.ImagenUrl))
+                {
+                    <img src="@grupo.Musica.ImagenUrl" alt="" />
+                }
+                else
+                {
+                    <div class="cm-placeholder">♪</div>
+                }
+                <div class="cm-titulos">
+                    <div class="cm-cancion">@grupo.Musica.Nombre</div>
+                    @if (!string.IsNullOrEmpty(artistas))
+                    {
+                        <div class="cm-artista">@artistas</div>
+                    }
+                </div>
+                <span class="cm-total">@grupo.Comentarios.Count @(grupo.Comentarios.Count == 1 ? "comentario" : "comentarios")</span>
+            </header>
+            <ul class="cm-lista">
+                @foreach (var c in grupo.Comentarios)
+                {
+                    <li class="cm-item">
+                        <div class="cm-meta">
+                            <b>@c.User.UserName</b>
+                            <span>@c.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                        <div class="cm-texto">@c.Texto</div>
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+}
+
+<style>
+    .cm-vacio {
+        padding: 40px;
+        text-align: center;
+        color: var(--txt-muted);
+        border: 1px dashed var(--border-col);
+        border-radius: 12px;
+    }
+
+    .cm-grupo {
+        background: var(--bg-card);
+        border: 1px solid var(--border-col);
+        border-radius: 14px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .cm-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border-col);
+    }
+
+        .cm-head img, .cm-placeholder {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+    .cm-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,.05);
+        color: var(--txt-muted);
+    }
+
+    .cm-titulos {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .cm-cancion {
+        font-weight: 700;
+        color: var(--txt-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cm-artista {
+        font-size: .82rem;
+        color: #22d3ee;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cm-total {
+        font-size: .78rem;
+        color: var(--txt-muted);
+        white-space: nowrap;
+    }
+
+    .cm-lista {
+        list-style: none;
+        margin: 0;
+        padding: 6px 0;
+    }
+
+    .cm-item {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border-col);
+    }
+
+        .cm-item:last-child {
+            border-bottom: none;
+        }
+
+    .cm-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: .8rem;
+        color: var(--txt-secondary);
+    }
+
+        .cm-meta span {
+            color: var(--txt-muted);
+            white-space: nowrap;
+        }
+
+    .cm-texto {
+        margin-top: 4px;
+        color: var(--txt-primary);
+        font-size: .9rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+</style>

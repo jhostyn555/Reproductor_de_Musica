@@ -24,5 +24,7 @@
         public bool EsFavorito { get; set; }
         public int? PrimerArtistaId { get; set; }
         public int? PrimerAlbumId { get; set; }
+        // Posición de la canción en la cola de reproducción de la página (null = sin reproductor)
+        public int? Pos { get; set; }
     }
 }

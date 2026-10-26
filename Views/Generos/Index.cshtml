@@ -1,0 +1,91 @@
+﻿@model EcommerceApp.Models.GenerosArtistasViewModel
+@{
+    ViewData["Title"] = "Géneros y Artistas";
+    ViewData["ActiveMenu"] = "GenerosYArtistas";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/gestion-musica.css" asp-append-version="true" />
+
+<div class="page-heading d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+        <h1>Géneros y Artistas</h1>
+        <p>Gestión de géneros musicales y artistas</p>
+    </div>
+    <div class="ga-botones">
+        <a asp-controller="Generos" asp-action="Create" class="ga-btn">+ Nuevo género</a>
+        <a asp-controller="Artistas" asp-action="Create" class="ga-btn ga-btn-alt">+ Nuevo artista</a>
+    </div>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="ga-ok">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="ga-err">@TempData["Error"]</div>
+}
+
+<section class="ga-seccion">
+    <h2>Géneros <span class="ga-count">@Model.Generos.Count</span></h2>
+    @if (!Model.Generos.Any())
+    {
+        <div class="ga-vacio">Todavía no hay géneros. Crea el primero con «+ Nuevo género».</div>
+    }
+    else
+    {
+        <table class="ga-tabla">
+            <thead><tr><th>Nombre</th><th>Canciones</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var g in Model.Generos)
+                {
+                    <tr>
+                        <td>@g.Nombre</td>
+                        <td>@g.MusicaGeneros.Count</td>
+                        <td>
+                            <div class="ga-acciones">
+                                <a asp-controller="Generos" asp-action="Edit" asp-route-id="@g.Id" class="ga-act">Editar</a>
+                                <form asp-controller="Generos" asp-action="Delete" asp-route-id="@g.Id" method="post"
+                                      onsubmit="return confirm('¿Eliminar este género? Se quitará de las canciones que lo tengan.')">
+                                    <button type="submit" class="ga-act del">Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>
+
+<section class="ga-seccion">
+    <h2>Artistas <span class="ga-count">@Model.Artistas.Count</span></h2>
+    @if (!Model.Artistas.Any())
+    {
+        <div class="ga-vacio">Todavía no hay artistas. Crea el primero con «+ Nuevo artista».</div>
+    }
+    else
+    {
+        <table class="ga-tabla">
+            <thead><tr><th>Nombre</th><th>Canciones</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var a in Model.Artistas)
+                {
+                    <tr>
+                        <td>@a.Nombre</td>
+                        <td>@a.MusicaArtistas.Count</td>
+                        <td>
+                            <div class="ga-acciones">
+                                <a asp-controller="Artistas" asp-action="Edit" asp-route-id="@a.Id" class="ga-act">Editar</a>
+                                <form asp-controller="Artistas" asp-action="Delete" asp-route-id="@a.Id" method="post"
+                                      onsubmit="return confirm('¿Eliminar este artista?')">
+                                    <button type="submit" class="ga-act del">Eliminar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

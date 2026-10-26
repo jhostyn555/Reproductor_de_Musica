@@ -4,18 +4,36 @@
     var artistas = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre));
 }
 <article class="mu-card">
-    <a class="mu-cover-link" asp-controller="User" asp-action="Escuchar" asp-route-id="@m.Id" aria-label="Escuchar @m.Nombre">
-        <div class="mu-cover">
-            @if (!string.IsNullOrEmpty(m.ImagenUrl))
-            {
-                <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
-            }
-            else
-            {
-                <div class="mu-placeholder">♪</div>
-            }
-        </div>
-    </a>
+    @if (Model.Pos.HasValue)
+    {
+        <button type="button" class="mu-cover-link mu-cover-btn" data-play="@Model.Pos.Value" aria-label="Reproducir @m.Nombre">
+            <div class="mu-cover">
+                @if (!string.IsNullOrEmpty(m.ImagenUrl))
+                {
+                    <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
+                }
+                else
+                {
+                    <div class="mu-placeholder">♪</div>
+                }
+            </div>
+        </button>
+    }
+    else
+    {
+        <a class="mu-cover-link" asp-controller="User" asp-action="Escuchar" asp-route-id="@m.Id" aria-label="Escuchar @m.Nombre">
+            <div class="mu-cover">
+                @if (!string.IsNullOrEmpty(m.ImagenUrl))
+                {
+                    <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
+                }
+                else
+                {
+                    <div class="mu-placeholder">♪</div>
+                }
+            </div>
+        </a>
+    }
     <div class="mu-meta">
         <div class="mu-text">
             <a class="mu-name" asp-controller="User" asp-action="Escuchar" asp-route-id="@m.Id" title="@m.Nombre">@m.Nombre</a>

@@ -15,7 +15,9 @@
 }
 <link rel="stylesheet" href="~/css/album-player.css" asp-append-version="true" />
 
-<div id="album-root" class="ab-root" data-tracks="@System.Text.Json.JsonSerializer.Serialize(datos)">
+@{ var urlHistorial = (ViewData["RegistrarHistorial"] is bool registrar && registrar) ? Url.Action("RegistrarReproduccion", "User") : null; }
+@Html.AntiForgeryToken()
+<div id="album-root" class="ab-root" data-tracks="@System.Text.Json.JsonSerializer.Serialize(datos)" data-url-historial="@urlHistorial">
 
     <header class="ab-head">
         <div class="ab-cover">

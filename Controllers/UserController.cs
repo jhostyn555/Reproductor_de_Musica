@@ -1,4 +1,7 @@
 using System.Security.Claims;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Identity;
+using EcommerceApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +14,20 @@ namespace EcommerceApp.Controllers
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly CloudinaryService _cloudinary;
 
-        public UserController(ApplicationDbContext db)
+        public UserController(
+            ApplicationDbContext db,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            CloudinaryService cloudinary)
         {
             _db = db;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _cloudinary = cloudinary;
         }
 
         private string? UserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -106,9 +119,227 @@ namespace EcommerceApp.Controllers
             return View(album);
         }
 
-        public IActionResult Historial() => View();
-        public IActionResult Novedades() => View();
-        public IActionResult Perfil() => View();
+        // POST: User/MeGusta (pulgar). Usa la misma relación que los favoritos.
+        // Responde JSON: { meGusta: true|false }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MeGusta(int id)
+        {
+            var uid = UserId;
+            if (uid == null) return Unauthorized();
+
+            var existente = await _db.Favoritos.FirstOrDefaultAsync(f => f.UserId == uid && f.MusicaId == id);
+            bool meGusta;
+            if (existente != null)
+            {
+                _db.Favoritos.Remove(existente);
+                meGusta = false;
+            }
+            else
+            {
+                if (!await _db.Musicas.AnyAsync(m => m.Id == id)) return NotFound();
+                _db.Favoritos.Add(new Favorito { UserId = uid, MusicaId = id });
+                meGusta = true;
+            }
+            await _db.SaveChangesAsync();
+            return Json(new { meGusta });
+        }
+
+        // GET: User/Historial — canciones escuchadas por el cliente (la más reciente primero)
+        public async Task<IActionResult> Historial()
+        {
+            var uid = UserId;
+            var registros = uid == null
+                ? new List<HistorialReproduccion>()
+                : await _db.HistorialReproducciones
+                    .Where(h => h.UserId == uid)
+                    .Include(h => h.Musica).ThenInclude(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
+                    .OrderByDescending(h => h.FechaReproduccion)
+                    .Take(500)
+                    .ToListAsync();
+
+            var canciones = registros
+                .GroupBy(h => h.MusicaId)
+                .Select(g => new HistorialItem
+                {
+                    Musica = g.First().Musica,
+                    Reproducciones = g.Count(),
+                    Ultima = g.First().FechaReproduccion
+                })
+                .OrderByDescending(x => x.Ultima)
+                .ToList();
+
+            ViewData["ActiveMenu"] = "Historial";
+            return View(canciones);
+        }
+
+        // POST: User/RegistrarReproduccion/5 — la llama el reproductor cuando una canción empieza a sonar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegistrarReproduccion(int id)
+        {
+            var uid = UserId;
+            if (uid == null) return Unauthorized();
+            if (!await _db.Musicas.AnyAsync(m => m.Id == id)) return NotFound();
+
+            _db.HistorialReproducciones.Add(new HistorialReproduccion
+            {
+                UserId = uid,
+                MusicaId = id,
+                FechaReproduccion = DateTime.UtcNow
+            });
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+        // GET: User/Novedades — canciones y anuncios creados hoy (hora local del servidor)
+        public async Task<IActionResult> Novedades()
+        {
+            var inicio = DateTime.Now.Date.ToUniversalTime();
+            var fin = DateTime.Now.Date.AddDays(1).ToUniversalTime();
+
+            var canciones = await _db.Musicas
+                .Where(m => m.CreadoEn >= inicio && m.CreadoEn < fin)
+                .Include(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
+                .OrderBy(m => m.Nombre)
+                .ToListAsync();
+
+            var anuncios = await _db.Anuncios
+                .Where(a => a.Activo && a.CreadoEn >= inicio && a.CreadoEn < fin)
+                .OrderByDescending(a => a.CreadoEn)
+                .ToListAsync();
+
+            ViewData["ActiveMenu"] = "Novedades";
+            return View(new NovedadesViewModel { Canciones = canciones, Anuncios = anuncios });
+        }
+
+        // GET: User/Perfil
+        public async Task<IActionResult> Perfil()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            ViewData["ActiveMenu"] = "Perfil";
+            return View(new PerfilViewModel
+            {
+                UserName = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                AvatarUrl = user.AvatarUrl
+            });
+        }
+
+        // POST: User/PerfilNombre — cambia el nombre de usuario
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PerfilNombre(PerfilViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var nombre = (model.UserName ?? string.Empty).Trim();
+            if (nombre.Length < 3 || nombre.Length > 30)
+            {
+                TempData["Error"] = "El nombre de usuario debe tener entre 3 y 30 caracteres.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            var resultado = await _userManager.SetUserNameAsync(user, nombre);
+            if (!resultado.Succeeded)
+            {
+                TempData["Error"] = string.Join(" ", resultado.Errors.Select(e => e.Description));
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["Success"] = "Nombre de usuario actualizado.";
+            return RedirectToAction(nameof(Perfil));
+        }
+
+        // POST: User/PerfilAvatar — sube una nueva imagen de perfil
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequestSizeLimit(5242880)] // 5 MB
+        public async Task<IActionResult> PerfilAvatar(IFormFile? archivo)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            if (archivo == null || archivo.Length == 0)
+            {
+                TempData["Error"] = "Selecciona una imagen.";
+                return RedirectToAction(nameof(Perfil));
+            }
+            if (!(archivo.ContentType ?? string.Empty).StartsWith("image/"))
+            {
+                TempData["Error"] = "El archivo debe ser una imagen.";
+                return RedirectToAction(nameof(Perfil));
+            }
+
+            try
+            {
+                var anterior = user.AvatarPublicId;
+                var (url, publicId) = await _cloudinary.SubirImagenAsync(archivo, "usuarios/avatares");
+                user.AvatarUrl = url;
+                user.AvatarPublicId = publicId;
+                await _userManager.UpdateAsync(user);
+
+                if (!string.IsNullOrEmpty(anterior))
+                    await _cloudinary.EliminarRecursoAsync(anterior, ResourceType.Image);
+
+                TempData["Success"] = "Avatar actualizado.";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "No se pudo subir la imagen: " + ex.Message;
+            }
+            return RedirectToAction(nameof(Perfil));
+        }
+
+        // GET: User/Comentarios?musicaId=5 — comentarios de una canción (JSON)
+        [HttpGet]
+        public async Task<IActionResult> Comentarios(int musicaId)
+        {
+            var lista = await _db.Comentarios
+                .Where(c => c.MusicaId == musicaId)
+                .Include(c => c.User)
+                .OrderByDescending(c => c.FechaCreacion)
+                .Take(100)
+                .Select(c => new
+                {
+                    id = c.Id,
+                    usuario = c.User.UserName ?? "Usuario",
+                    texto = c.Texto,
+                    fecha = c.FechaCreacion
+                })
+                .ToListAsync();
+            return Json(lista);
+        }
+
+        // POST: User/Comentar — publica un comentario en una canción (JSON)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Comentar(int musicaId, string texto)
+        {
+            var uid = UserId;
+            if (uid == null) return Unauthorized();
+
+            var limpio = (texto ?? string.Empty).Trim();
+            if (limpio.Length == 0 || limpio.Length > 500)
+                return BadRequest("El comentario debe tener entre 1 y 500 caracteres.");
+            if (!await _db.Musicas.AnyAsync(m => m.Id == musicaId)) return NotFound();
+
+            var comentario = new Comentario
+            {
+                MusicaId = musicaId,
+                UserId = uid,
+                Texto = limpio,
+                FechaCreacion = DateTime.UtcNow
+            };
+            _db.Comentarios.Add(comentario);
+            await _db.SaveChangesAsync();
+
+            var usuario = (await _userManager.FindByIdAsync(uid))?.UserName ?? "Usuario";
+            return Json(new { id = comentario.Id, usuario, texto = comentario.Texto, fecha = comentario.FechaCreacion });
+        }
 
         // ── Helpers ──
 

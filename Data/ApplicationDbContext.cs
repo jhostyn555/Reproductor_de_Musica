@@ -13,6 +13,8 @@ namespace EcommerceApp.Data
         public DbSet<Artista> Artistas { get; set; }
         public DbSet<Anuncio> Anuncios { get; set; }
         public DbSet<Favorito> Favoritos { get; set; }
+        public DbSet<HistorialReproduccion> HistorialReproducciones { get; set; }
+        public DbSet<Comentario> Comentarios { get; set; }
         public DbSet<Album> Albumes { get; set; }
         public DbSet<AlbumMusica> AlbumMusicas { get; set; }
 
@@ -58,6 +60,20 @@ namespace EcommerceApp.Data
                 .HasOne(am => am.Musica).WithMany(m => m.AlbumMusicas).HasForeignKey(am => am.MusicaId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<AlbumMusica>()
                 .HasIndex(am => new { am.AlbumId, am.MusicaId }).IsUnique();
+
+            // Historial de reproducciones del cliente
+            modelBuilder.Entity<HistorialReproduccion>()
+                .HasIndex(h => new { h.UserId, h.FechaReproduccion });
+            modelBuilder.Entity<HistorialReproduccion>()
+                .HasOne(h => h.Musica).WithMany().HasForeignKey(h => h.MusicaId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<HistorialReproduccion>()
+                .HasOne(h => h.User).WithMany().HasForeignKey(h => h.UserId).OnDelete(DeleteBehavior.Cascade);
+
+            // Comentarios de canciones
+            modelBuilder.Entity<Comentario>()
+                .HasOne(c => c.Musica).WithMany().HasForeignKey(c => c.MusicaId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Comentario>()
+                .HasOne(c => c.User).WithMany().HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
 
             // Seed géneros
             modelBuilder.Entity<Genero>().HasData(

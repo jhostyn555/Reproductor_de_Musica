@@ -5,6 +5,7 @@
 (function () {
     var root = document.getElementById('album-root');
     if (!root) return;
+    var urlHistorial = root.dataset.urlHistorial;
 
     var pistas = [];
     try { pistas = JSON.parse(root.dataset.tracks || '[]'); } catch (e) { pistas = []; }
@@ -66,11 +67,29 @@
     }
 
     // Reproduce una pista. Si había una sonando, la manda a la pila (historial).
+    // Solo en la página del cliente: guarda la escucha en su historial.
+    function registrarEscucha(id) {
+        var tokenEl = document.querySelector('input[name="__RequestVerificationToken"]');
+        fetch(urlHistorial, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': tokenEl ? tokenEl.value : ''
+            },
+            body: 'id=' + encodeURIComponent(id)
+        }).catch(function () { });
+    }
+
     function reproducir(t, guardarActualEnPila) {
         if (actual && guardarActualEnPila) pila.push(actual);
         actual = t;
         audio.src = t.audio || '';
-        audio.play().catch(function () { });
+        if (urlHistorial) {
+            audio.play().then(function () { registrarEscucha(t.id); }).catch(function () { });
+        } else {
+            audio.play().catch(function () { });
+        }
         pintar();
     }
 

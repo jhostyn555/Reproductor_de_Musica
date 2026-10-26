@@ -22,8 +22,12 @@ namespace EcommerceApp.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid) return View(model);
 
-            var result = await signInManager.PasswordSignInAsync(
-                model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            // El usuario entra con su correo; el nombre de usuario puede cambiar en el perfil.
+            var usuario = await userManager.FindByEmailAsync(model.Email);
+            var result = usuario == null
+                ? Microsoft.AspNetCore.Identity.SignInResult.Failed
+                : await signInManager.PasswordSignInAsync(
+                    usuario.UserName!, model.Password, model.RememberMe, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
@@ -74,7 +78,8 @@ namespace EcommerceApp.Controllers
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            // Después de cerrar sesión se muestra Inicio (el login aparece al intentar escuchar).
+            return RedirectToAction("Inicio", "User");
         }
 
         [HttpGet]

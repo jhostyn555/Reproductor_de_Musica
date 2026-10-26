@@ -1,0 +1,389 @@
+﻿/* Reproductor de la página de músicas del cliente */
+[hidden] {
+    display: none !important;
+}
+
+.mu-contenido {
+    padding-bottom: 110px;
+}
+
+.mu-cover-btn {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+.mp-modo {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    margin: -8px 0 24px;
+    border-radius: 10px;
+    background: var(--up-sidebar-bg, #0f1222);
+    border: 1px solid var(--up-border, #232a44);
+}
+
+.mp-modo-btn {
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--up-txt-sub, #94a3b8);
+    font-size: .8rem;
+    cursor: pointer;
+}
+
+    .mp-modo-btn.active {
+        background: rgba(124,92,255,.22);
+        color: var(--up-txt, #f1f5f9);
+    }
+
+.mp-root {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 95;
+}
+
+/* Vista miniatura (barra inferior) */
+.mp-mini {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 8px 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: #1f2440;
+    border: 1px solid var(--up-border, #232a44);
+    box-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+
+.mp-root.is-full .mp-mini {
+    display: none;
+}
+
+.mp-mini-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+    .mp-mini-body img {
+        width: 44px;
+        height: 44px;
+        border-radius: 6px;
+        object-fit: cover;
+        background: rgba(255,255,255,.06);
+        flex-shrink: 0;
+    }
+
+.mp-mini-text {
+    min-width: 0;
+}
+
+.mp-title {
+    font-weight: 600;
+    color: var(--up-txt, #f1f5f9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mp-artist {
+    font-size: .78rem;
+    color: var(--up-txt-muted, #64748b);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mp-mini-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mp-mini-progress {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 0;
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255,255,255,.12);
+    overflow: hidden;
+}
+
+    .mp-mini-progress > div {
+        height: 100%;
+        width: 0;
+        background: #fff;
+    }
+
+/* Botones */
+.mp-ic {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.mp-round {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    font-size: .95rem;
+}
+
+.mp-like {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.1rem;
+    opacity: .55;
+    padding: 4px;
+}
+
+    .mp-like.is-liked {
+        opacity: 1;
+        filter: drop-shadow(0 0 6px rgba(74,222,128,.7));
+    }
+
+/* Vista completa */
+.mp-full {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 96;
+    flex-direction: column;
+    padding: 18px 22px 26px;
+    overflow-y: auto;
+    background: linear-gradient(180deg, #4a5a2a 0%, #2b3320 45%, #0f1222 100%);
+    color: #fff;
+}
+
+.mp-root.is-full .mp-full {
+    display: flex;
+}
+
+.mp-full-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .8rem;
+    color: #e5e7eb;
+}
+
+.mp-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.mp-full-cover {
+    width: min(80vw, 360px);
+    aspect-ratio: 1 / 1;
+    margin: 26px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,.5);
+    background: rgba(255,255,255,.06);
+}
+
+    .mp-full-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+.mp-full-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.mp-full-text {
+    min-width: 0;
+}
+
+.mp-full-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mp-full-artist {
+    color: #d1d5db;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mp-like-big {
+    font-size: 1.6rem;
+}
+
+.mp-seek {
+    width: 100%;
+    margin-top: 22px;
+    accent-color: #fff;
+}
+
+.mp-times {
+    display: flex;
+    justify-content: space-between;
+    font-size: .75rem;
+    color: #d1d5db;
+    margin-top: 4px;
+}
+
+.mp-full-ctrl {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin-top: 22px;
+}
+
+    .mp-full-ctrl .mp-ic {
+        font-size: 1.6rem;
+        width: 48px;
+        height: 48px;
+    }
+
+.mp-round-big {
+    width: 66px;
+    height: 66px;
+    font-size: 1.4rem;
+}
+
+/* Comentarios de la canción (vista completa) */
+.mp-com-btn {
+    margin-top: 18px;
+    align-self: center;
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(0,0,0,.25);
+    color: #fff;
+    cursor: pointer;
+    font-size: .85rem;
+}
+
+.mp-com {
+    margin-top: 16px;
+    border-radius: 12px;
+    background: rgba(0,0,0,.35);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 12px;
+    display: grid;
+    gap: 10px;
+}
+
+    .mp-com[hidden] {
+        display: none !important;
+    }
+
+.mp-com-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: #fff;
+}
+
+.mp-com-x {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.mp-com-lista {
+    display: grid;
+    gap: 8px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.mp-com-vacio {
+    margin: 6px 0;
+    color: #d1d5db;
+    font-size: .85rem;
+    text-align: center;
+}
+
+.mp-com-item {
+    background: rgba(255,255,255,.06);
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.mp-com-user {
+    font-size: .75rem;
+    color: #d1d5db;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.mp-com-texto {
+    margin-top: 3px;
+    color: #fff;
+    font-size: .9rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.mp-com-form {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+    .mp-com-form textarea {
+        flex: 1;
+        resize: none;
+        border-radius: 9px;
+        border: 1px solid rgba(255,255,255,.25);
+        background: rgba(0,0,0,.3);
+        color: #fff;
+        padding: 8px 10px;
+        font-family: inherit;
+        font-size: .9rem;
+    }
+
+.mp-com-enviar {
+    padding: 9px 14px;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background: #fff;
+    color: #000;
+}

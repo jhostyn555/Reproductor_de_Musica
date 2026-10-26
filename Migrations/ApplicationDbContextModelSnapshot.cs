@@ -33,6 +33,12 @@ namespace EcommerceApp.Migrations
                 b.Property<string>("Address")
                     .HasColumnType("text");
 
+                b.Property<string>("AvatarPublicId")
+                    .HasColumnType("text");
+
+                b.Property<string>("AvatarUrl")
+                    .HasColumnType("text");
+
                 b.Property<string>("ConcurrencyStamp")
                     .IsConcurrencyToken()
                     .HasColumnType("text");
@@ -778,6 +784,103 @@ namespace EcommerceApp.Migrations
             modelBuilder.Entity("EcommerceApp.Models.Album", b =>
             {
                 b.Navigation("AlbumMusicas");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.HistorialReproduccion", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                b.Property<DateTime>("FechaReproduccion")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<int>("MusicaId")
+                    .HasColumnType("integer");
+
+                b.Property<string>("UserId")
+                    .IsRequired()
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.HasIndex("MusicaId");
+
+                b.HasIndex("UserId", "FechaReproduccion");
+
+                b.ToTable("HistorialReproducciones");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.HistorialReproduccion", b =>
+            {
+                b.HasOne("EcommerceApp.Models.Musica", "Musica")
+                    .WithMany()
+                    .HasForeignKey("MusicaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("EcommerceApp.Models.ApplicationUser", "User")
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Musica");
+
+                b.Navigation("User");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.Comentario", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("integer");
+
+                NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                b.Property<DateTime>("FechaCreacion")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<int>("MusicaId")
+                    .HasColumnType("integer");
+
+                b.Property<string>("Texto")
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnType("character varying(500)");
+
+                b.Property<string>("UserId")
+                    .IsRequired()
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.HasIndex("MusicaId");
+
+                b.HasIndex("UserId");
+
+                b.ToTable("Comentarios");
+            });
+
+            modelBuilder.Entity("EcommerceApp.Models.Comentario", b =>
+            {
+                b.HasOne("EcommerceApp.Models.Musica", "Musica")
+                    .WithMany()
+                    .HasForeignKey("MusicaId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("EcommerceApp.Models.ApplicationUser", "User")
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Musica");
+
+                b.Navigation("User");
             });
 
 #pragma warning restore 612, 618

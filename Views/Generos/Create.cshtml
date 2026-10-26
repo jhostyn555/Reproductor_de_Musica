@@ -1,0 +1,23 @@
+﻿@model EcommerceApp.Models.Genero
+@{
+    ViewData["Title"] = "Nuevo género";
+    ViewData["ActiveMenu"] = "GenerosYArtistas";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/gestion-musica.css" asp-append-version="true" />
+
+<div class="page-heading">
+    <h1>Nuevo género</h1>
+    <p>Se usa para agrupar las canciones en Músicas</p>
+</div>
+
+<form asp-controller="Generos" asp-action="Create" method="post" class="ga-form">
+    <div asp-validation-summary="ModelOnly" class="ga-err"></div>
+    <label>Nombre</label>
+    <input asp-for="Nombre" class="ga-input" maxlength="80" placeholder="Ej: Cumbia" />
+    <span asp-validation-for="Nombre" class="ga-err"></span>
+    <div class="ga-actions-form">
+        <a asp-controller="Generos" asp-action="Index" class="ga-cancel">Cancelar</a>
+        <button type="submit" class="ga-btn">Guardar</button>
+    </div>
+</form>

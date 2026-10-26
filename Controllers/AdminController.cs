@@ -7,7 +7,7 @@ namespace EcommerceApp.Controllers
     public class AdminController : Controller
     {
         public IActionResult Dashboard() => View();
-        public IActionResult GenerosYArtistas() => View();
+        public IActionResult GenerosYArtistas() => RedirectToAction("Index", "Generos");
         public IActionResult Musicas() => RedirectToAction("Index", "Musicas");
         public IActionResult Albumes() => RedirectToAction("Index", "Albumes");
         public IActionResult Playlists() => View();
