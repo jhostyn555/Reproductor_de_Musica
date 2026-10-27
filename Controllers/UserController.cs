@@ -110,6 +110,39 @@ namespace EcommerceApp.Controllers
         }
 
         // GET: User/Album/5 — tracklist del álbum (solo lectura)
+        // GET: User/Albumes — los álbumes que creó el admin
+        public async Task<IActionResult> Albumes()
+        {
+            var albumes = await _db.Albumes
+                .Include(a => a.Artista)
+                .Include(a => a.AlbumMusicas)
+                .OrderByDescending(a => a.FechaCreacion)
+                .ToListAsync();
+            ViewData["ActiveMenu"] = "Albumes";
+            return View(albumes);
+        }
+
+        // GET: User/MasDeArtista?artistaId=3&excluirId=5 — otras canciones aprobadas del artista (JSON)
+        [HttpGet]
+        public async Task<IActionResult> MasDeArtista(int artistaId, int excluirId)
+        {
+            var lista = await _db.Musicas
+                .Where(m => m.Estado == "Aprobada" && m.Id != excluirId && m.MusicaArtistas.Any(ma => ma.ArtistaId == artistaId))
+                .Include(m => m.MusicaArtistas).ThenInclude(ma => ma.Artista)
+                .OrderBy(m => m.Nombre)
+                .Take(12)
+                .ToListAsync();
+
+            return Json(lista.Select(m => new
+            {
+                id = m.Id,
+                nombre = m.Nombre,
+                artista = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre)),
+                audio = m.AudioUrl,
+                imagen = m.ImagenUrl
+            }));
+        }
+
         public async Task<IActionResult> Album(int id)
         {
             var album = await _db.Albumes

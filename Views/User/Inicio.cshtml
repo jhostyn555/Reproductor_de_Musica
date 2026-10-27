@@ -10,29 +10,6 @@
     <p>Tu página de inicio</p>
 </div>
 
-@if (Model.Anuncios.Any())
-{
-    <div class="mu-ads">
-        @foreach (var a in Model.Anuncios)
-        {
-            <div class="mu-ad">
-                <span class="mu-ad-tag">Anuncio</span>
-                @if (!string.IsNullOrEmpty(a.Enlace))
-                {
-                    <a href="@a.Enlace" target="_blank" rel="noopener noreferrer">
-                        <img src="@a.ImagenUrl" alt="@a.Titulo" loading="lazy" />
-                    </a>
-                }
-                else
-                {
-                    <img src="@a.ImagenUrl" alt="@a.Titulo" loading="lazy" />
-                }
-                <div class="mu-ad-title">@a.Titulo</div>
-            </div>
-        }
-    </div>
-}
-
 @if (TempData["Success"] != null)
 {
     <div class="mu-ok">@TempData["Success"]</div>

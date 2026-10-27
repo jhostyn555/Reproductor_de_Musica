@@ -31,6 +31,8 @@
     var fullToggle = $('mp-full-toggle'), fullPrev = $('mp-full-prev'), fullNext = $('mp-full-next');
     var fullLike = $('mp-full-like'), seek = $('mp-seek'), curEl = $('mp-cur'), durEl = $('mp-dur');
     var cerrar = $('mp-close');
+    var btnMax = $('mp-max'), btnSalir = $('mp-salir');
+    var explora = $('mp-explora'), exTit = $('mp-explora-titulo'), exGrid = $('mp-explora-grid');
     var comBtn = $('mp-com-btn'), comPanel = $('mp-com'), comCerrar = $('mp-com-cerrar');
     var comForm = $('mp-com-form'), comTexto = $('mp-com-texto');
 
@@ -72,6 +74,39 @@
         }).catch(function () { });
     }
 
+    // "Explora más de {artista}": otras canciones del mismo artista; al tocar una, se reproduce.
+    function cargarExplora(t) {
+        if (!t || !t.artistaId) { explora.hidden = true; return; }
+        fetch(root.dataset.urlMasArtista + '?artistaId=' + t.artistaId + '&excluirId=' + t.id, { credentials: 'same-origin' })
+            .then(function (r) { if (!r.ok) throw new Error('error'); return r.json(); })
+            .then(function (lista) {
+                exTit.textContent = 'Explora más de ' + (t.artistaNombre || t.artista);
+                exGrid.innerHTML = '';
+                if (!lista.length) { explora.hidden = true; return; }
+                explora.hidden = false;
+                lista.forEach(function (c) {
+                    var b = document.createElement('button');
+                    b.type = 'button';
+                    b.className = 'mp-ex-card';
+                    var im = document.createElement('img');
+                    im.src = c.imagen || '';
+                    im.alt = '';
+                    var nm = document.createElement('b');
+                    nm.textContent = c.nombre;
+                    var sm = document.createElement('small');
+                    sm.textContent = c.artista;
+                    b.appendChild(im); b.appendChild(nm); b.appendChild(sm);
+                    b.addEventListener('click', function () {
+                        secuencia.push({ id: c.id, nombre: c.nombre, artista: c.artista, audio: c.audio, imagen: c.imagen,
+                                         meGusta: false, artistaId: t.artistaId, artistaNombre: t.artistaNombre });
+                        reproducirPos(secuencia.length - 1, true);
+                    });
+                    exGrid.appendChild(b);
+                });
+            })
+            .catch(function () { explora.hidden = true; });
+    }
+
     function reproducirPos(i, guardarEnPila) {
         if (!autenticado) { window.location.href = urlLogin; return; }
         if (i < 0 || i >= secuencia.length) return;
@@ -83,6 +118,7 @@
         if (localStorage.getItem('mu-vista') === 'completa') root.classList.add('is-full');
         pintar();
         if (!comPanel.hidden) cargarComentarios();
+        cargarExplora(secuencia[i]);
     }
 
     function siguiente() {
@@ -192,6 +228,31 @@
 
     miniBody.addEventListener('click', function () { root.classList.add('is-full'); });
     cerrar.addEventListener('click', function () { root.classList.remove('is-full'); });
+
+    // Maximizar: pantalla completa del navegador / volver a la ventana
+    btnMax.addEventListener('click', function () {
+        if (!document.fullscreenElement) {
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () { });
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    });
+    document.addEventListener('fullscreenchange', function () {
+        btnMax.title = document.fullscreenElement ? 'Salir de pantalla completa' : 'Maximizar';
+        btnMax.textContent = document.fullscreenElement ? '🗗' : '⛶';
+    });
+
+    // Salir: detiene la música y cierra el reproductor
+    btnSalir.addEventListener('click', function () {
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+        idx = -1;
+        pila = [];
+        root.classList.remove('is-full');
+        explora.hidden = true;
+        pintar();
+    });
 
     [miniToggle, fullToggle].forEach(function (b) { b.addEventListener('click', alternar); });
     [miniPrev, fullPrev].forEach(function (b) { b.addEventListener('click', anterior); });

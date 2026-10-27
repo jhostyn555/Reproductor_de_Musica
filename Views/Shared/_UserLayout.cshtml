@@ -94,6 +94,14 @@
                     </a>
                 </li>
 
+                <li class="up-menu-item @(ViewData["ActiveMenu"]?.ToString() == "Albumes" ? "active" : "")">
+                    <a asp-controller="User" asp-action="Albumes" class="up-menu-link">
+                        <span class="up-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
+                        </span>
+                        <span class="up-menu-label">Álbumes</span>
+                    </a>
+                </li>
                 <li class="up-menu-item @(ViewData["ActiveMenu"]?.ToString() == "Novedades" ? "active" : "")">
                     <a asp-controller="User" asp-action="Novedades" class="up-menu-link">
                         <span class="up-menu-icon">
@@ -203,6 +211,12 @@
     <div class="up-main" id="upMain">
 
         <!-- Topbar -->
+        @{
+            var anunciosActivos = Db.Anuncios
+                .Where(a => a.Activo && a.ImagenUrl != null)
+                .OrderByDescending(a => a.CreadoEn)
+                .ToList();
+        }
         <header class="up-topbar">
             <div class="up-topbar-left">
                 <button class="up-topbar-toggle" id="upTopToggle" title="Menú">
@@ -225,13 +239,30 @@
             </div>
 
             <div class="up-topbar-right">
-                <!-- Notificacion dot (decorativa) -->
-                <div class="up-notif-btn" title="Notificaciones">
+                <!-- Campana: muestra la publicidad activa en un panel emergente -->
+                <div class="up-notif-btn" id="upNotifBtn" title="Publicidad" role="button" tabindex="0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                         <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                     </svg>
-                    <span class="up-notif-dot"></span>
+                    @if (anunciosActivos.Any())
+                    {
+                        <span class="up-notif-dot"></span>
+                    }
+                    <div class="up-notif-panel" id="up-notif-panel" hidden>
+                        <div class="up-notif-head">Publicidad activa</div>
+                        @if (!anunciosActivos.Any())
+                        {
+                            <div class="up-notif-vacio">No hay anuncios activos.</div>
+                        }
+                        @foreach (var an in anunciosActivos)
+                        {
+                            <button type="button" class="up-notif-item" data-zoom="@an.ImagenUrl" data-titulo="@an.Titulo" data-enlace="@(an.Enlace ?? "")">
+                                <img src="@an.ImagenUrl" alt="" loading="lazy" />
+                                <span>@an.Titulo</span>
+                            </button>
+                        }
+                    </div>
                 </div>
 
                 <!-- Botón de cuenta (persona) -->
@@ -331,5 +362,6 @@
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/pwa.js" asp-append-version="true"></script>
     <script src="~/js/busqueda-voz.js" asp-append-version="true"></script>
+    <script src="~/js/anuncios.js" asp-append-version="true"></script>
 </body>
 </html>

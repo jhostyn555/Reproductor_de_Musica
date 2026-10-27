@@ -12,6 +12,8 @@
         id = m.Id,
         nombre = m.Nombre,
         artista = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre)),
+        artistaId = m.MusicaArtistas.Select(ma => (int?)ma.ArtistaId).FirstOrDefault(),
+        artistaNombre = m.MusicaArtistas.Select(ma => ma.Artista.Nombre).FirstOrDefault() ?? "",
         audio = m.AudioUrl,
         imagen = m.ImagenUrl,
         meGusta = Model.FavoritosIds.Contains(m.Id)
@@ -29,6 +31,20 @@
         }
         <button type="submit" class="mu-search-btn">Buscar</button>
     </form>
+
+    @if (Model.Anuncios.Any())
+    {
+        <div class="mu-ads">
+            @foreach (var an in Model.Anuncios)
+            {
+                <button type="button" class="mu-ad mu-ad-btn" data-zoom="@an.ImagenUrl" data-titulo="@an.Titulo" data-enlace="@(an.Enlace ?? "")">
+                    <span class="mu-ad-tag">Anuncio</span>
+                    <img src="@an.ImagenUrl" alt="@an.Titulo" loading="lazy" />
+                    <div class="mu-ad-title">@an.Titulo</div>
+                </button>
+            }
+        </div>
+    }
 
     <div class="mu-switch">
         <a class="mu-vs @(esGenero ? "active" : "")" href="?vista=genero@(qs)">Por género</a>
