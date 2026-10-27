@@ -1,0 +1,17 @@
+@model EcommerceApp.Models.NodoArbol
+<details class="ar-nodo" open>
+    <summary>@Model.Nombre <span class="ar-count">@Model.Total @(Model.Total == 1 ? "canción" : "canciones")</span></summary>
+    @foreach (var hijo in Model.Hijos)
+    {
+        @await Html.PartialAsync("_NodoArbol", hijo)
+    }
+    @if (Model.Canciones.Any())
+    {
+        <ul class="ar-lista">
+            @foreach (var m in Model.Canciones)
+            {
+                <li>@m.Nombre <small>@string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre))</small></li>
+            }
+        </ul>
+    }
+</details>

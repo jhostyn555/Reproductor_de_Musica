@@ -1,0 +1,20 @@
+﻿@model EcommerceApp.Models.Playlist
+@{
+    ViewData["Title"] = Model.Nombre;
+    ViewData["ActiveMenu"] = "Playlists";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var arbol = (EcommerceApp.Models.NodoArbol)ViewData["Arbol"]!;
+}
+@await Html.PartialAsync("_EstilosPlaylists")
+<a asp-action="Index" class="pl-cancel">← Volver a playlists</a>
+
+@await Html.PartialAsync("_ReproductorPlaylist", Model)
+
+<details class="pl-arbol">
+    <summary>Vista en árbol (género → canción)</summary>
+    <div class="ar-raiz">
+        @await Html.PartialAsync("_NodoArbol", arbol)
+    </div>
+</details>
+
+<script src="~/js/album-player.js" asp-append-version="true"></script>

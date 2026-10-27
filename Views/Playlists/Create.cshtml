@@ -1,0 +1,12 @@
+﻿@model EcommerceApp.Models.PlaylistViewModel
+@{
+    ViewData["Title"] = "Nueva playlist pública";
+    ViewData["ActiveMenu"] = "Playlists";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Accion"] = "Create";
+    ViewData["Controlador"] = "Playlists";
+    ViewData["MostrarPublica"] = true;
+}
+@await Html.PartialAsync("_EstilosPlaylists")
+<div class="page-heading"><h1>Nueva playlist pública</h1><p>Las canciones se reproducen en el orden en que las agregas</p></div>
+@await Html.PartialAsync("_EditorPlaylist", Model)

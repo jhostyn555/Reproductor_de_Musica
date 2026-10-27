@@ -1,0 +1,13 @@
+@model EcommerceApp.Models.PlaylistViewModel
+@{
+    ViewData["Title"] = "Nueva playlist";
+    ViewData["ActiveMenu"] = "MisPlaylists";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["Accion"] = "Create";
+    ViewData["Controlador"] = "MisPlaylists";
+    ViewData["MostrarPublica"] = false;
+}
+@await Html.PartialAsync("_EstilosPlaylists")
+<a asp-action="Index" class="pl-cancel">← Volver a playlists</a>
+<div class="up-page-heading"><h1>Nueva playlist privada</h1><p>Solo tú puedes verla y editarla</p></div>
+@await Html.PartialAsync("_EditorPlaylist", Model)

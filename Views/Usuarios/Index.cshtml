@@ -1,0 +1,54 @@
+@model IEnumerable<EcommerceApp.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "Usuarios";
+    ViewData["ActiveMenu"] = "Usuarios";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-heading">
+    <h1>Usuarios registrados</h1>
+    <p>@Model.Count() usuarios (solo visualización)</p>
+</div>
+
+<style>
+    .usr-lista { display: grid; gap: 10px; }
+    .usr-item { display: flex; align-items: center; gap: 14px; background: var(--bg-card); border: 1px solid var(--border-col); border-radius: 12px; padding: 12px 14px; }
+    .usr-avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: linear-gradient(135deg, var(--clr-primary, #7c5cff), var(--clr-primary-2, #a78bfa)); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+    .usr-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .usr-nombre { font-weight: 600; color: var(--txt-primary); }
+    .usr-full { font-size: .8rem; color: var(--txt-muted); }
+    .usr-vacio { padding: 40px; text-align: center; color: var(--txt-muted); border: 1px dashed var(--border-col); border-radius: 12px; }
+</style>
+
+@if (!Model.Any())
+{
+    <div class="usr-vacio">Todavía no hay usuarios registrados.</div>
+}
+else
+{
+    <div class="usr-lista">
+        @foreach (var u in Model)
+        {
+            var inicial = string.IsNullOrEmpty(u.UserName) ? "U" : u.UserName.Substring(0, 1).ToUpper();
+            <div class="usr-item">
+                <div class="usr-avatar">
+                    @if (!string.IsNullOrEmpty(u.AvatarUrl))
+                    {
+                        <img src="@u.AvatarUrl" alt="" />
+                    }
+                    else
+                    {
+                        <span>@inicial</span>
+                    }
+                </div>
+                <div>
+                    <div class="usr-nombre">@u.UserName</div>
+                    @if (!string.IsNullOrEmpty(u.FullName))
+                    {
+                        <div class="usr-full">@u.FullName</div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}

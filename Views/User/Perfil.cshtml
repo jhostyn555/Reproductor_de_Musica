@@ -52,6 +52,12 @@
     </section>
 
     <section class="pf-card">
+        <h3 class="pf-titulo">Mis canciones</h3>
+        <p class="pf-hint">Envía una canción. El administrador la aprobará antes de hacerla pública.</p>
+        <a asp-action="CrearCancion" class="pf-btn" style="text-align:center;text-decoration:none">+ Crear canción</a>
+    </section>
+
+    <section class="pf-card">
         <h3 class="pf-titulo">Sesión</h3>
         <form asp-controller="Account" asp-action="Logout" method="post">
             <button type="submit" class="pf-btn pf-btn-danger">Cerrar sesión</button>

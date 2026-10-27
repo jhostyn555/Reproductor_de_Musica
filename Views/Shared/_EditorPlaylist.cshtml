@@ -1,0 +1,64 @@
+@model EcommerceApp.Models.PlaylistViewModel
+@{
+    var accion = (string)ViewData["Accion"]!;
+    var controlador = (string)ViewData["Controlador"]!;
+    var mostrarPublica = ViewData["MostrarPublica"] is bool b && b;
+}
+@await Html.PartialAsync("_EstilosPlaylists")
+
+<form method="post" asp-controller="@controlador" asp-action="@accion"
+      asp-route-id="@(Model.Id == 0 ? (int?)null : Model.Id)" id="pl-editor" class="pl-form">
+    <div asp-validation-summary="ModelOnly" class="pl-err"></div>
+
+    <label asp-for="Nombre">Nombre de la playlist</label>
+    <input asp-for="Nombre" class="pl-input" maxlength="120" />
+    <span asp-validation-for="Nombre" class="pl-err"></span>
+
+    @if (mostrarPublica)
+    {
+        <label class="pl-check"><input type="checkbox" checked disabled /> Pública (la ven todos los usuarios)</label>
+    }
+
+    <span asp-validation-for="MusicaIds" class="pl-err"></span>
+
+    <div class="pl-grid">
+        <section class="pl-panel">
+            <div class="pl-titulo">Canciones disponibles</div>
+            <input type="search" id="pl-buscar" class="pl-input" placeholder="Buscar canción, artista o género..." autocomplete="off" />
+            <div id="pl-disponibles" class="pl-disponibles">
+                @foreach (var m in Model.Disponibles)
+                {
+                    <button type="button" class="pl-disp" data-id="@m.Id" data-nombre="@m.Nombre" data-artista="@m.Artistas" data-genero="@m.Genero">
+                        @m.Nombre
+                        <small>@m.Artistas · @m.Genero</small>
+                    </button>
+                }
+            </div>
+        </section>
+
+        <section class="pl-panel">
+            <div class="pl-titulo">Cola de reproducción <span id="pl-contador" class="pl-count">0</span></div>
+            <ol id="pl-cola" class="pl-cola">
+                @{ var pos = 0; }
+                @foreach (var id in Model.MusicaIds)
+                {
+                    var m = Model.Disponibles.FirstOrDefault(x => x.Id == id);
+                    if (m != null)
+                    {
+                        pos++;
+                        <li data-id="@m.Id"><span class="pl-num">@pos.</span><span>@m.Nombre — @m.Artistas</span><button type="button" class="pl-quitar" data-remove="@m.Id" title="Quitar">✕</button></li>
+                    }
+                }
+            </ol>
+            <button type="button" id="pl-undo" class="pl-btn-sec" disabled>↶ Deshacer último cambio</button>
+            <div id="pl-hidden"></div>
+        </section>
+    </div>
+
+    <div class="pl-acciones">
+        <a href="javascript:history.back()" class="pl-cancel">Cancelar</a>
+        <button type="submit" class="pl-btn">Guardar playlist</button>
+    </div>
+</form>
+
+<script src="~/js/playlist-editor.js" asp-append-version="true"></script>

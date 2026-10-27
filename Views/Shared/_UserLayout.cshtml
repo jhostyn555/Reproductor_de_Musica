@@ -1,3 +1,4 @@
+@inject EcommerceApp.Data.ApplicationDbContext Db
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,6 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/user-panel.css" asp-append-version="true" />
+    <link rel="manifest" href="~/manifest.json" />
+    <meta name="theme-color" content="#7c3aed" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MusicApp" />
+    <link rel="apple-touch-icon" href="~/icons/apple-touch-icon-180.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/icons/favicon-32.png" />
 </head>
 <body class="user-panel-body">
 
@@ -78,7 +85,23 @@
                         <span class="up-menu-label">Historial</span>
                     </a>
                 </li>
+                <li class="up-menu-item @(ViewData["ActiveMenu"]?.ToString() == "MisPlaylists" ? "active" : "")">
+                    <a asp-controller="MisPlaylists" asp-action="Index" class="up-menu-link">
+                        <span class="up-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+                        </span>
+                        <span class="up-menu-label">Playlists</span>
+                    </a>
+                </li>
 
+                <li class="up-menu-item @(ViewData["ActiveMenu"]?.ToString() == "Albumes" ? "active" : "")">
+                    <a asp-controller="User" asp-action="Albumes" class="up-menu-link">
+                        <span class="up-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
+                        </span>
+                        <span class="up-menu-label">Álbumes</span>
+                    </a>
+                </li>
                 <li class="up-menu-item @(ViewData["ActiveMenu"]?.ToString() == "Novedades" ? "active" : "")">
                     <a asp-controller="User" asp-action="Novedades" class="up-menu-link">
                         <span class="up-menu-icon">
@@ -142,11 +165,23 @@
         </nav>
 
         <!-- User profile footer -->
+        @{
+            var avatarFooter = User.Identity?.IsAuthenticated == true
+                ? Db.Users.Where(u => u.UserName == User.Identity!.Name).Select(u => u.AvatarUrl).FirstOrDefault()
+                : null;
+        }
         <div class="up-sidebar-footer">
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <div class="up-user-avatar">
-                    @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                    @if (!string.IsNullOrEmpty(avatarFooter))
+                    {
+                        <img src="@avatarFooter" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block" />
+                    }
+                    else
+                    {
+                        @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                    }
                 </div>
                 <div class="up-user-info">
                     <span class="up-user-name">@User.Identity.Name</span>
@@ -176,6 +211,12 @@
     <div class="up-main" id="upMain">
 
         <!-- Topbar -->
+        @{
+            var anunciosActivos = Db.Anuncios
+                .Where(a => a.Activo && a.ImagenUrl != null)
+                .OrderByDescending(a => a.CreadoEn)
+                .ToList();
+        }
         <header class="up-topbar">
             <div class="up-topbar-left">
                 <button class="up-topbar-toggle" id="upTopToggle" title="Menú">
@@ -198,13 +239,30 @@
             </div>
 
             <div class="up-topbar-right">
-                <!-- Notificacion dot (decorativa) -->
-                <div class="up-notif-btn" title="Notificaciones">
+                <!-- Campana: muestra la publicidad activa en un panel emergente -->
+                <div class="up-notif-btn" id="upNotifBtn" title="Publicidad" role="button" tabindex="0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                         <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                     </svg>
-                    <span class="up-notif-dot"></span>
+                    @if (anunciosActivos.Any())
+                    {
+                        <span class="up-notif-dot"></span>
+                    }
+                    <div class="up-notif-panel" id="up-notif-panel" hidden>
+                        <div class="up-notif-head">Publicidad activa</div>
+                        @if (!anunciosActivos.Any())
+                        {
+                            <div class="up-notif-vacio">No hay anuncios activos.</div>
+                        }
+                        @foreach (var an in anunciosActivos)
+                        {
+                            <button type="button" class="up-notif-item" data-zoom="@an.ImagenUrl" data-titulo="@an.Titulo" data-enlace="@(an.Enlace ?? "")">
+                                <img src="@an.ImagenUrl" alt="" loading="lazy" />
+                                <span>@an.Titulo</span>
+                            </button>
+                        }
+                    </div>
                 </div>
 
                 <!-- Botón de cuenta (persona) -->
@@ -302,5 +360,8 @@
             })();
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/pwa.js" asp-append-version="true"></script>
+    <script src="~/js/busqueda-voz.js" asp-append-version="true"></script>
+    <script src="~/js/anuncios.js" asp-append-version="true"></script>
 </body>
 </html>

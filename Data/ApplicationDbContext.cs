@@ -15,6 +15,8 @@ namespace EcommerceApp.Data
         public DbSet<Favorito> Favoritos { get; set; }
         public DbSet<HistorialReproduccion> HistorialReproducciones { get; set; }
         public DbSet<Comentario> Comentarios { get; set; }
+        public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<PlaylistMusica> PlaylistMusicas { get; set; }
         public DbSet<Album> Albumes { get; set; }
         public DbSet<AlbumMusica> AlbumMusicas { get; set; }
 
@@ -74,6 +76,14 @@ namespace EcommerceApp.Data
                 .HasOne(c => c.Musica).WithMany().HasForeignKey(c => c.MusicaId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Comentario>()
                 .HasOne(c => c.User).WithMany().HasForeignKey(c => c.UserId).OnDelete(DeleteBehavior.Cascade);
+
+            // Playlists: la cola (Orden) es única por canción dentro de cada playlist
+            modelBuilder.Entity<PlaylistMusica>()
+                .HasOne(pm => pm.Playlist).WithMany(p => p.Canciones).HasForeignKey(pm => pm.PlaylistId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<PlaylistMusica>()
+                .HasOne(pm => pm.Musica).WithMany().HasForeignKey(pm => pm.MusicaId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<PlaylistMusica>()
+                .HasIndex(pm => new { pm.PlaylistId, pm.MusicaId }).IsUnique();
 
             // Seed géneros
             modelBuilder.Entity<Genero>().HasData(

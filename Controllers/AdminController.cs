@@ -124,11 +124,11 @@ namespace EcommerceApp.Controllers
         public IActionResult GenerosYArtistas() => RedirectToAction("Index", "Generos");
         public IActionResult Musicas() => RedirectToAction("Index", "Musicas");
         public IActionResult Albumes() => RedirectToAction("Index", "Albumes");
-        public IActionResult Playlists() => View();
-        public IActionResult Comentarios() => View();
+        public IActionResult Playlists() => RedirectToAction("Index", "Playlists");
+        public IActionResult Comentarios() => RedirectToAction("Index", "Comentarios");
         public IActionResult Estadisticas() => View();
         public IActionResult Publicidad() => RedirectToAction("Index", "Anuncios");
-        public IActionResult Notificaciones() => View();
-        public IActionResult Usuarios() => View();
+        public IActionResult Notificaciones() => RedirectToAction("Index", "Notificaciones");
+        public IActionResult Usuarios() => RedirectToAction("Index", "Usuarios");
     }
 }

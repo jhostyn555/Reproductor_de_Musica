@@ -9,7 +9,7 @@
      data-url-megusta="@Url.Action("MeGusta", "User")"
      data-url-historial="@Url.Action("RegistrarReproduccion", "User")"
      data-url-comentarios="@Url.Action("Comentarios", "User")"
-     data-url-comentar="@Url.Action("Comentar", "User")">
+     data-url-comentar="@Url.Action("Comentar", "User")" data-url-mas-artista="@Url.Action("MasDeArtista", "User")">
 
     <div class="mp-mini" id="mp-mini">
         <div class="mp-mini-body" id="mp-mini-body" title="Abrir reproductor">
@@ -30,9 +30,12 @@
 
     <div class="mp-full" id="mp-full">
         <div class="mp-full-top">
-            <button type="button" class="mp-close" id="mp-close" aria-label="Minimizar">⌄</button>
+            <button type="button" class="mp-close" id="mp-close" aria-label="Minimizar" title="Minimizar">⌄</button>
             <span>Reproduciendo</span>
-            <span></span>
+            <div class="mp-win">
+                <button type="button" class="mp-win-btn" id="mp-max" aria-label="Maximizar" title="Maximizar">⛶</button>
+                <button type="button" class="mp-win-btn" id="mp-salir" aria-label="Salir del reproductor" title="Salir">✕</button>
+            </div>
         </div>
         <div class="mp-full-cover"><img id="mp-full-img" alt="" /></div>
         <div class="mp-full-info">
@@ -50,13 +53,17 @@
             <button type="button" class="mp-ic" id="mp-full-next" aria-label="Siguiente">⏭</button>
         </div>
 
+        <section class="mp-explora" id="mp-explora" hidden>
+            <div class="mp-explora-titulo" id="mp-explora-titulo">Explora más</div>
+            <div class="mp-explora-grid" id="mp-explora-grid"></div>
+        </section>
+
         <button type="button" class="mp-com-btn" id="mp-com-btn">💬 Comentarios de la canción</button>
         <div class="mp-com" id="mp-com" hidden>
             <div class="mp-com-head">
                 <span>Comentarios</span>
                 <button type="button" class="mp-com-x" id="mp-com-cerrar" aria-label="Cerrar comentarios">✕</button>
             </div>
-            <div class="mp-com-lista" id="mp-com-lista"></div>
             <form class="mp-com-form" id="mp-com-form">
                 <textarea id="mp-com-texto" maxlength="500" rows="2" placeholder="Escribe un comentario..."></textarea>
                 <button type="submit" class="mp-com-enviar">Enviar</button>
