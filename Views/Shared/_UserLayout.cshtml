@@ -85,6 +85,14 @@
                         <span class="up-menu-label">Historial</span>
                     </a>
                 </li>
+                <li class="up-menu-item @(ViewData["ActiveMenu"]?.ToString() == "MisPlaylists" ? "active" : "")">
+                    <a asp-controller="MisPlaylists" asp-action="Index" class="up-menu-link">
+                        <span class="up-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+                        </span>
+                        <span class="up-menu-label">Playlists</span>
+                    </a>
+                </li>
 
                 <li class="up-menu-item @(ViewData["ActiveMenu"]?.ToString() == "Novedades" ? "active" : "")">
                     <a asp-controller="User" asp-action="Novedades" class="up-menu-link">

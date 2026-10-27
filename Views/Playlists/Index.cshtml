@@ -1,0 +1,41 @@
+﻿@model IEnumerable<EcommerceApp.Models.Playlist>
+@{
+    ViewData["Title"] = "Playlists";
+    ViewData["ActiveMenu"] = "Playlists";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@await Html.PartialAsync("_EstilosPlaylists")
+
+<div class="page-heading d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+        <h1>Playlists públicas</h1>
+        <p>Visibles para todos los usuarios</p>
+    </div>
+    <a asp-action="Create" class="pl-btn" style="text-decoration:none">+ Nueva playlist</a>
+</div>
+
+@if (TempData["Success"] != null) { <div class="pl-vacio" style="border-style:solid;color:#4ade80">@TempData["Success"]</div> }
+
+@if (!Model.Any())
+{
+    <div class="pl-vacio">Todavía no hay playlists públicas. Crea la primera con «+ Nueva playlist».</div>
+}
+else
+{
+    <div class="pl-cards">
+        @foreach (var p in Model)
+        {
+            <article class="pl-card">
+                <div class="pl-card-titulo">@p.Nombre</div>
+                <div class="pl-card-sub">@p.Canciones.Count @(p.Canciones.Count == 1 ? "canción" : "canciones") · @p.CreadoEn.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                <div class="pl-card-acciones">
+                    <a asp-action="Details" asp-route-id="@p.Id" class="pl-link">▶ Escuchar</a>
+                    <a asp-action="Edit" asp-route-id="@p.Id" class="pl-link">Editar</a>
+                    <form asp-action="Delete" asp-route-id="@p.Id" method="post" onsubmit="return confirm('¿Eliminar esta playlist?')" style="margin:0">
+                        <button type="submit" class="pl-link del">Eliminar</button>
+                    </form>
+                </div>
+            </article>
+        }
+    </div>
+}

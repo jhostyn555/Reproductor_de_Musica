@@ -1,0 +1,13 @@
+@model EcommerceApp.Models.PlaylistViewModel
+@{
+    ViewData["Title"] = "Editar playlist";
+    ViewData["ActiveMenu"] = "MisPlaylists";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["Accion"] = "Edit";
+    ViewData["Controlador"] = "MisPlaylists";
+    ViewData["MostrarPublica"] = false;
+}
+@await Html.PartialAsync("_EstilosPlaylists")
+<a asp-action="Index" class="pl-cancel">← Volver a playlists</a>
+<div class="up-page-heading"><h1>Editar playlist</h1><p>@Model.Nombre</p></div>
+@await Html.PartialAsync("_EditorPlaylist", Model)
