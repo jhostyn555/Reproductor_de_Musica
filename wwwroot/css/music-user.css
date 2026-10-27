@@ -186,36 +186,45 @@
     margin-top: 2px;
 }
 
-/* Menú de tres puntos */
+/* Menú de tres puntos: esquina superior derecha de la tarjeta */
 .mm {
-    position: relative;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 70;
     flex-shrink: 0;
 }
 
 .mm-trigger {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    border: none;
-    background: transparent;
-    color: var(--up-txt-sub);
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(10, 13, 25, 0.82);
+    color: #ffffff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
-    .mm-trigger:hover, .mm-trigger[aria-expanded="true"] {
-        background: var(--up-sidebar-hover);
-        color: var(--up-txt);
+    .mm-trigger:hover,
+    .mm-trigger[aria-expanded="true"] {
+        background: var(--up-primary);
+        color: #04121a;
+        border-color: transparent;
     }
 
 .mm-pop {
     position: absolute;
     right: 0;
     top: calc(100% + 6px);
-    z-index: 70;
+    z-index: 80;
     min-width: 230px;
+    max-width: min(260px, calc(100vw - 32px));
+    box-sizing: border-box;
     background: #111427;
     border: 1px solid var(--up-border);
     border-radius: 12px;
@@ -331,4 +340,25 @@
 .mu-grid.mu-grid-compact {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 20px;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+    .mu-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px 12px;
+    }
+
+        .mu-grid.mu-grid-compact {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px 12px;
+        }
+
+    .mu-ads {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mm-pop {
+        min-width: 210px;
+    }
 }

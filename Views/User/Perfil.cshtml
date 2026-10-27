@@ -185,4 +185,60 @@
         color: #f87171;
         border: 1px solid rgba(248,113,113,.3);
     }
+    
+    .pf-grid,
+    .pf-card,
+    .pf-form {
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .pf-card {
+        width: 100%;
+    }
+
+    .pf-input {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .pf-form input[type="file"] {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        font-size: 0.85rem;
+    }
+
+    .pf-btn {
+        width: 100%;
+        box-sizing: border-box;
+        overflow-wrap: anywhere;
+    }
+
+    .pf-dato b {
+        overflow-wrap: anywhere;
+    }
+
+    @@media (max-width: 600px) {
+        .pf-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 14px;
+        }
+
+        .pf-card {
+            padding: 16px;
+        }
+
+        .pf-avatar {
+            width: 100px;
+            height: 100px;
+        }
+
+        .pf-form input[type="file"] {
+            font-size: 0.75rem;
+        }
+    }
 </style>

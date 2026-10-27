@@ -43,5 +43,14 @@
             }
         </div>
         @await Html.PartialAsync("_CancionMenu", Model)
-    </div>
-</article>
+
+        <div class="mu-meta">
+            <div class="mu-text">
+                <a class="mu-name" asp-controller="User" asp-action="Escuchar" asp-route-id="@m.Id" title="@m.Nombre">@m.Nombre</a>
+                @if (!string.IsNullOrEmpty(artistas))
+                {
+                    <div class="mu-artists">@artistas</div>
+                }
+            </div>
+        </div>
+    </article>
