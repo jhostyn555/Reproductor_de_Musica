@@ -11,10 +11,10 @@ namespace EcommerceApp.Controllers
         public IActionResult Musicas() => RedirectToAction("Index", "Musicas");
         public IActionResult Albumes() => RedirectToAction("Index", "Albumes");
         public IActionResult Playlists() => RedirectToAction("Index", "Playlists");
-        public IActionResult Comentarios() => View();
+        public IActionResult Comentarios() => RedirectToAction("Index", "Comentarios");
         public IActionResult Estadisticas() => View();
         public IActionResult Publicidad() => RedirectToAction("Index", "Anuncios");
         public IActionResult Notificaciones() => RedirectToAction("Index", "Notificaciones");
-        public IActionResult Usuarios() => View();
+        public IActionResult Usuarios() => RedirectToAction("Index", "Usuarios");
     }
 }

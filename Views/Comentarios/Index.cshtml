@@ -1,160 +1,64 @@
-﻿@model IEnumerable<EcommerceApp.Models.ComentariosPorCancion>
+﻿@model IEnumerable<EcommerceApp.Models.Musica>
 @{
     ViewData["Title"] = "Comentarios";
     ViewData["ActiveMenu"] = "Comentarios";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var conteos = (Dictionary<int, int>)ViewData["Conteos"]!;
 }
 
 <div class="page-heading">
     <h1>Comentarios</h1>
-    <p>Agrupados por canción</p>
+    <p>Canciones y sus comentarios. Toca una canción para ver sus comentarios (solo lectura).</p>
 </div>
+
+<style>
+    .cmx-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+    .cmx-card { display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: inherit; background: var(--bg-card); border: 1px solid var(--border-col); border-radius: 14px; padding: 12px; min-width: 0; }
+    .cmx-card:hover { border-color: var(--clr-primary, #7c5cff); }
+    .cmx-cover { position: relative; aspect-ratio: 1 / 1; border-radius: 10px; overflow: hidden; background: rgba(255,255,255,.05); display: flex; align-items: center; justify-content: center; color: var(--txt-muted); font-size: 2rem; }
+    .cmx-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cmx-badge { position: absolute; top: 8px; right: 8px; font-size: .72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(0,0,0,.7); color: #fff; }
+    .cmx-titulo { font-weight: 700; color: var(--txt-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cmx-artista { font-size: .84rem; color: #22d3ee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cmx-generos { display: flex; flex-wrap: wrap; gap: 6px; }
+    .cmx-genero { font-size: .72rem; padding: 3px 9px; border-radius: 999px; background: rgba(124,92,255,.2); color: #c4b5fd; }
+    .cmx-total { font-size: .78rem; color: var(--txt-muted); margin-top: auto; }
+    .cmx-vacio { padding: 40px; text-align: center; color: var(--txt-muted); border: 1px dashed var(--border-col); border-radius: 12px; }
+</style>
 
 @if (!Model.Any())
 {
-    <div class="cm-vacio">Todavía no hay comentarios. Aparecerán aquí cuando los clientes comenten una canción.</div>
+    <div class="cmx-vacio">Todavía no hay canciones.</div>
 }
 else
 {
-    @foreach (var grupo in Model)
-    {
-        var artistas = string.Join(", ", grupo.Musica.MusicaArtistas.Select(ma => ma.Artista.Nombre));
-        <section class="cm-grupo">
-            <header class="cm-head">
-                @if (!string.IsNullOrEmpty(grupo.Musica.ImagenUrl))
-                {
-                    <img src="@grupo.Musica.ImagenUrl" alt="" />
-                }
-                else
-                {
-                    <div class="cm-placeholder">♪</div>
-                }
-                <div class="cm-titulos">
-                    <div class="cm-cancion">@grupo.Musica.Nombre</div>
-                    @if (!string.IsNullOrEmpty(artistas))
+    <div class="cmx-grid">
+        @foreach (var m in Model)
+        {
+            var artistas = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre));
+            var total = conteos.ContainsKey(m.Id) ? conteos[m.Id] : 0;
+            <a class="cmx-card" asp-action="Details" asp-route-id="@m.Id">
+                <div class="cmx-cover">
+                    @if (!string.IsNullOrEmpty(m.ImagenUrl))
                     {
-                        <div class="cm-artista">@artistas</div>
+                        <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
+                    }
+                    else
+                    {
+                        <span>♪</span>
+                    }
+                    <span class="cmx-badge">@total @(total == 1 ? "comentario" : "comentarios")</span>
+                </div>
+                <div class="cmx-titulo" title="@m.Nombre">@m.Nombre</div>
+                <div class="cmx-artista">@(string.IsNullOrEmpty(artistas) ? "Sin artista" : artistas)</div>
+                <div class="cmx-generos">
+                    @foreach (var mg in m.MusicaGeneros)
+                    {
+                        <span class="cmx-genero">@mg.Genero.Nombre</span>
                     }
                 </div>
-                <span class="cm-total">@grupo.Comentarios.Count @(grupo.Comentarios.Count == 1 ? "comentario" : "comentarios")</span>
-            </header>
-            <ul class="cm-lista">
-                @foreach (var c in grupo.Comentarios)
-                {
-                    <li class="cm-item">
-                        <div class="cm-meta">
-                            <b>@c.User.UserName</b>
-                            <span>@c.FechaCreacion.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
-                        </div>
-                        <div class="cm-texto">@c.Texto</div>
-                    </li>
-                }
-            </ul>
-        </section>
-    }
+                <div class="cmx-total">Estado: @m.Estado</div>
+            </a>
+        }
+    </div>
 }
-
-<style>
-    .cm-vacio {
-        padding: 40px;
-        text-align: center;
-        color: var(--txt-muted);
-        border: 1px dashed var(--border-col);
-        border-radius: 12px;
-    }
-
-    .cm-grupo {
-        background: var(--bg-card);
-        border: 1px solid var(--border-col);
-        border-radius: 14px;
-        margin-bottom: 20px;
-        overflow: hidden;
-    }
-
-    .cm-head {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 14px 16px;
-        border-bottom: 1px solid var(--border-col);
-    }
-
-        .cm-head img, .cm-placeholder {
-            width: 48px;
-            height: 48px;
-            border-radius: 8px;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-    .cm-placeholder {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255,255,255,.05);
-        color: var(--txt-muted);
-    }
-
-    .cm-titulos {
-        min-width: 0;
-        flex: 1;
-    }
-
-    .cm-cancion {
-        font-weight: 700;
-        color: var(--txt-primary);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .cm-artista {
-        font-size: .82rem;
-        color: #22d3ee;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .cm-total {
-        font-size: .78rem;
-        color: var(--txt-muted);
-        white-space: nowrap;
-    }
-
-    .cm-lista {
-        list-style: none;
-        margin: 0;
-        padding: 6px 0;
-    }
-
-    .cm-item {
-        padding: 10px 16px;
-        border-bottom: 1px solid var(--border-col);
-    }
-
-        .cm-item:last-child {
-            border-bottom: none;
-        }
-
-    .cm-meta {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        font-size: .8rem;
-        color: var(--txt-secondary);
-    }
-
-        .cm-meta span {
-            color: var(--txt-muted);
-            white-space: nowrap;
-        }
-
-    .cm-texto {
-        margin-top: 4px;
-        color: var(--txt-primary);
-        font-size: .9rem;
-        white-space: pre-wrap;
-        word-break: break-word;
-    }
-</style>
