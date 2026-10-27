@@ -1,0 +1,100 @@
+﻿@model EcommerceApp.Models.AlbumViewModel
+@{
+    var esNuevo = Model.Id == 0;
+    var accion = esNuevo ? "Create" : "Edit";
+    var seleccionadasJson = System.Text.Json.JsonSerializer.Serialize(Model.CancionesIds);
+}
+
+<form asp-action="@accion" asp-route-id="@(esNuevo ? (int?)null : Model.Id)" method="post" enctype="multipart/form-data" id="albumForm"
+      class="al-form"
+      data-artistas-url="@Url.Action("CancionesDeArtista", "Albumes")"
+      data-duracion-url="@Url.Action("GuardarDuracion", "Musicas")"
+      data-seleccionadas="@seleccionadasJson">
+
+    <div asp-validation-summary="ModelOnly" class="al-err-text"></div>
+
+    <div class="al-grid-form">
+        <div class="al-col">
+            <label>Título del álbum</label>
+            <input asp-for="Titulo" class="al-input" maxlength="200" placeholder="Ej: Resurrexion" />
+            <span asp-validation-for="Titulo" class="al-err-text"></span>
+
+            <label>Artista</label>
+            <select asp-for="ArtistaId" asp-items="Model.ArtistasDisponibles" class="al-input">
+                <option value="">— Selecciona un artista —</option>
+            </select>
+            <span asp-validation-for="ArtistaId" class="al-err-text"></span>
+
+            <label>Fecha de creación</label>
+            <input asp-for="FechaCreacion" type="date" class="al-input" />
+            <span asp-validation-for="FechaCreacion" class="al-err-text"></span>
+
+            <label>Imagen de portada</label>
+            @if (!string.IsNullOrEmpty(Model.ImagenUrlActual))
+            {
+                <img src="@Model.ImagenUrlActual" alt="Portada actual" class="al-preview" />
+            }
+            <input asp-for="ArchivoImagen" type="file" accept="image/*" class="al-input" />
+            <input asp-for="UrlImagen" type="url" class="al-input" placeholder="o pega un enlace: https://ejemplo.com/portada.jpg" />
+            <span asp-validation-for="ArchivoImagen" class="al-err-text"></span>
+            <span asp-validation-for="UrlImagen" class="al-err-text"></span>
+        </div>
+
+        <div class="al-col">
+            <div class="al-resumen">
+                <div><span class="al-k">Tipo</span><span id="al-tipo" class="al-v">—</span></div>
+                <div><span class="al-k">Canciones</span><span id="al-contador" class="al-v">0</span></div>
+                <div><span class="al-k">Duración</span><span id="al-duracion" class="al-v">0 min</span></div>
+            </div>
+            <div id="al-sin-dur" class="al-hint"></div>
+            <span asp-validation-for="CancionesIds" class="al-err-text"></span>
+
+            <div class="al-panel-title">Canciones del artista</div>
+            <div id="al-catalogo" class="al-catalogo">
+                <p class="al-hint">Selecciona un artista para ver sus canciones.</p>
+            </div>
+
+            <div class="al-panel-title">Orden del tracklist <span class="al-hint">(cola: en el orden en que las marcas)</span></div>
+            <ol id="al-orden" class="al-orden"></ol>
+
+            <div class="al-botones-aux">
+                <button type="button" id="al-undo" class="al-act" disabled>Deshacer último cambio</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="al-actions-final">
+        <a asp-action="Index" class="al-cancel">Cancelar</a>
+        <button type="submit" class="al-btn">Guardar álbum</button>
+    </div>
+</form>
+
+<style>
+    .al-form { display: grid; gap: 18px; max-width: 1080px; }
+    .al-grid-form { display: grid; gap: 28px; grid-template-columns: minmax(260px, 1fr) minmax(300px, 1.2fr); }
+    @@media (max-width: 860px) { .al-grid-form { grid-template-columns: 1fr; } }
+    .al-col { display: grid; gap: 6px; align-content: start; }
+    .al-col label { font-size: .82rem; color: var(--txt-secondary); margin-top: 10px; }
+    .al-input { padding: 10px 12px; border-radius: 9px; background: var(--bg-card); border: 1px solid var(--border-col); color: var(--txt-primary); }
+    .al-preview { width: 140px; height: 140px; object-fit: cover; border-radius: 10px; }
+    .al-err-text { color: #f87171; font-size: .8rem; }
+    .al-resumen { display: flex; gap: 12px; flex-wrap: wrap; }
+    .al-resumen > div { flex: 1; min-width: 110px; padding: 10px 12px; border-radius: 10px; background: var(--bg-card); border: 1px solid var(--border-col); display: grid; gap: 4px; }
+    .al-k { font-size: .7rem; color: var(--txt-muted); text-transform: uppercase; letter-spacing: .06em; }
+    .al-v { font-weight: 700; color: var(--txt-primary); }
+    .al-hint { font-size: .78rem; color: var(--txt-muted); margin: 4px 0; }
+    .al-panel-title { margin-top: 14px; font-weight: 600; color: var(--txt-primary); font-size: .9rem; }
+    .al-catalogo { max-height: 300px; overflow: auto; display: grid; gap: 4px; padding: 6px; border-radius: 10px; border: 1px solid var(--border-col); background: var(--bg-card); }
+    .al-song { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 8px; cursor: pointer; font-size: .88rem; color: var(--txt-primary); }
+    .al-song:hover { background: rgba(255,255,255,.04); }
+    .al-song small { color: var(--txt-muted); }
+    .al-orden { margin: 0; padding-left: 22px; display: grid; gap: 4px; font-size: .86rem; color: var(--txt-secondary); min-height: 24px; }
+    .al-botones-aux { margin-top: 10px; }
+    .al-act { padding: 7px 12px; border-radius: 8px; font-size: .8rem; color: var(--txt-secondary); background: transparent; border: 1px solid var(--border-col); cursor: pointer; }
+    .al-act:disabled { opacity: .4; cursor: not-allowed; }
+    .al-actions-final { display: flex; justify-content: flex-end; gap: 14px; align-items: center; }
+    .al-cancel { color: var(--txt-secondary); text-decoration: none; font-size: .88rem; }
+    .al-btn { padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: .88rem; color: #fff; border: none; cursor: pointer; background: linear-gradient(135deg, var(--clr-primary, #7c5cff), var(--clr-primary-2, #a78bfa)); }
+</style>
+
+<script src="~/js/album-form.js" asp-append-version="true"></script>

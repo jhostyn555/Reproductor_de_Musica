@@ -1,0 +1,409 @@
+/* Reproductor de álbum: se usa en el panel de admin y en el de cliente. */
+.ab-root, .ab-bar {
+    --ab-txt: var(--up-txt, var(--txt-primary, #f1f5f9));
+    --ab-sub: var(--up-txt-sub, var(--txt-secondary, #94a3b8));
+    --ab-muted: var(--up-txt-muted, var(--txt-muted, #64748b));
+    --ab-border: var(--up-border, var(--border-col, #232a44));
+    --ab-primary: var(--up-primary, var(--clr-primary, #7c5cff));
+    --ab-accent: var(--up-accent, var(--clr-primary-2, #a78bfa));
+    --ab-panel: var(--up-sidebar-bg, var(--bg-card, #0f1222));
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.ab-back {
+    display: inline-block;
+    margin-bottom: 18px;
+    font-size: .88rem;
+    color: var(--ab-sub);
+    text-decoration: none;
+}
+
+.ab-root {
+    padding-bottom: 120px;
+}
+
+.ab-head {
+    display: flex;
+    gap: 26px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+}
+
+.ab-cover {
+    width: 230px;
+    height: 230px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255,255,255,.05);
+    box-shadow: 0 18px 40px rgba(0,0,0,.5);
+    flex-shrink: 0;
+}
+
+    .ab-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+.ab-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: var(--ab-muted);
+}
+
+.ab-info {
+    min-width: 0;
+}
+
+.ab-kind {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--ab-muted);
+}
+
+.ab-title {
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    font-weight: 800;
+    color: var(--ab-txt);
+    margin: 6px 0;
+    line-height: 1.05;
+}
+
+.ab-artist {
+    font-weight: 600;
+    color: var(--ab-txt);
+}
+
+.ab-meta {
+    font-size: .82rem;
+    color: var(--ab-sub);
+    margin-top: 6px;
+}
+
+.ab-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.ab-play-all {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--ab-primary), var(--ab-accent));
+}
+
+.ab-viewswitch {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 999px;
+    border: 1px solid var(--ab-border);
+    background: var(--ab-panel);
+}
+
+.ab-vs {
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    color: var(--ab-sub);
+    cursor: pointer;
+    font-size: .82rem;
+}
+
+    .ab-vs.active {
+        background: rgba(124,92,255,.22);
+        color: var(--ab-txt);
+    }
+
+/* Vista lista */
+.ab-list-head, .ab-item.ab-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 70px 40px;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 10px;
+}
+
+.ab-list-head {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ab-muted);
+    border-bottom: 1px solid var(--ab-border);
+}
+
+.ab-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ab-row {
+    border-radius: 8px;
+    color: var(--ab-txt);
+}
+
+    .ab-row:hover {
+        background: rgba(255,255,255,.04);
+    }
+
+.ab-num {
+    color: var(--ab-muted);
+    font-size: .9rem;
+}
+
+.ab-thumb {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: rgba(255,255,255,.06);
+}
+
+    .ab-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+.ab-thumb-play {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    font-size: .9rem;
+}
+
+.ab-thumb:hover .ab-thumb-play, .ab-item.is-playing .ab-thumb-play, .ab-tile-img:hover .ab-thumb-play {
+    display: flex;
+}
+
+.ab-name {
+    min-width: 0;
+    cursor: pointer;
+}
+
+.ab-name-title {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ab-name-artist {
+    font-size: .78rem;
+    color: var(--ab-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ab-item.is-current .ab-name-title, .ab-tile.is-current .ab-tile-name {
+    color: #c084fc;
+}
+
+.ab-dur {
+    font-size: .85rem;
+    color: var(--ab-muted);
+    text-align: right;
+}
+
+.ab-add {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--ab-border);
+    background: transparent;
+    color: var(--ab-sub);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+    .ab-add:hover {
+        color: var(--ab-txt);
+        border-color: var(--ab-primary);
+    }
+
+/* Vista miniaturas: mientras una suena, puedes elegir otra sin detenerla */
+.ab-tiles {
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+.ab-tile {
+    min-width: 0;
+}
+
+.ab-tile-img {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: none;
+    padding: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255,255,255,.05);
+    cursor: pointer;
+}
+
+    .ab-tile-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform .35s ease;
+    }
+
+    .ab-tile-img:hover img {
+        transform: scale(1.04);
+    }
+
+    .ab-tile-img .ab-thumb-play {
+        font-size: 1.4rem;
+    }
+
+.ab-tile.is-current .ab-tile-img {
+    box-shadow: 0 0 0 2px #c084fc;
+}
+
+.ab-tile-name {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: .92rem;
+    color: var(--ab-txt);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ab-tile-sub {
+    font-size: .78rem;
+    color: var(--ab-muted);
+    margin-top: 2px;
+}
+
+/* Barra del reproductor (fija abajo) */
+.ab-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) auto minmax(220px, 1.2fr) auto;
+    gap: 16px;
+    align-items: center;
+    padding: 10px 22px;
+    background: #0f1222;
+    border-top: 1px solid var(--ab-border);
+}
+
+.ab-now {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
+}
+
+    .ab-now img {
+        width: 44px;
+        height: 44px;
+        border-radius: 6px;
+        object-fit: cover;
+        background: rgba(255,255,255,.06);
+    }
+
+.ab-now-title {
+    font-weight: 600;
+    color: var(--ab-txt);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ab-now-artist {
+    font-size: .78rem;
+    color: var(--ab-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ab-ctrl {
+    display: flex;
+    gap: 10px;
+}
+
+    .ab-ctrl button {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: rgba(255,255,255,.08);
+        color: var(--ab-txt);
+    }
+
+    .ab-ctrl #ab-toggle {
+        background: #fff;
+        color: #000;
+    }
+
+.ab-progress {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: .72rem;
+    color: var(--ab-muted);
+}
+
+    .ab-progress input {
+        flex: 1;
+    }
+
+.ab-queue-info {
+    font-size: .75rem;
+    color: var(--ab-muted);
+    white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+    .ab-bar {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .ab-cover {
+        width: 160px;
+        height: 160px;
+    }
+}

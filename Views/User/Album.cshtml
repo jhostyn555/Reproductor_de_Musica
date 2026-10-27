@@ -1,0 +1,13 @@
+﻿@model EcommerceApp.Models.Album
+@{
+    ViewData["Title"] = Model.Titulo;
+    ViewData["ActiveMenu"] = "Musicas";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["RegistrarHistorial"] = true;
+}
+
+<a asp-controller="User" asp-action="Musicas" class="ab-back">← Volver a músicas</a>
+
+@await Html.PartialAsync("_ReproductorAlbum", Model)
+
+<script src="~/js/album-player.js" asp-append-version="true"></script>

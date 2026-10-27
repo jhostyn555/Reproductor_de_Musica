@@ -1,0 +1,75 @@
+﻿@model string
+@Html.AntiForgeryToken()
+<link rel="stylesheet" href="~/css/music-player.css" asp-append-version="true" />
+
+<div id="mu-player" class="mp-root" hidden
+     data-secuencia="@Model"
+     data-autenticado="@(User.Identity?.IsAuthenticated == true ? "true" : "false")"
+     data-url-login="@Url.Action("Login", "Account", new { returnUrl = Context.Request.Path.ToString() })"
+     data-url-megusta="@Url.Action("MeGusta", "User")"
+     data-url-historial="@Url.Action("RegistrarReproduccion", "User")"
+     data-url-comentarios="@Url.Action("Comentarios", "User")"
+     data-url-comentar="@Url.Action("Comentar", "User")" data-url-mas-artista="@Url.Action("MasDeArtista", "User")">
+
+    <div class="mp-mini" id="mp-mini">
+        <div class="mp-mini-body" id="mp-mini-body" title="Abrir reproductor">
+            <img id="mp-mini-img" alt="" />
+            <div class="mp-mini-text">
+                <div id="mp-mini-title" class="mp-title"></div>
+                <div id="mp-mini-artist" class="mp-artist"></div>
+            </div>
+        </div>
+        <div class="mp-mini-ctrl">
+            <button type="button" class="mp-like" id="mp-mini-like" aria-label="Me gusta" aria-pressed="false">👍</button>
+            <button type="button" class="mp-ic" id="mp-mini-prev" aria-label="Anterior">⏮</button>
+            <button type="button" class="mp-round" id="mp-mini-toggle" aria-label="Reproducir o pausar">▶</button>
+            <button type="button" class="mp-ic" id="mp-mini-next" aria-label="Siguiente">⏭</button>
+        </div>
+        <div class="mp-mini-progress"><div id="mp-mini-fill"></div></div>
+    </div>
+
+    <div class="mp-full" id="mp-full">
+        <div class="mp-full-top">
+            <button type="button" class="mp-close" id="mp-close" aria-label="Minimizar" title="Minimizar">⌄</button>
+            <span>Reproduciendo</span>
+            <div class="mp-win">
+                <button type="button" class="mp-win-btn" id="mp-max" aria-label="Maximizar" title="Maximizar">⛶</button>
+                <button type="button" class="mp-win-btn" id="mp-salir" aria-label="Salir del reproductor" title="Salir">✕</button>
+            </div>
+        </div>
+        <div class="mp-full-cover"><img id="mp-full-img" alt="" /></div>
+        <div class="mp-full-info">
+            <div class="mp-full-text">
+                <div id="mp-full-title" class="mp-full-title"></div>
+                <div id="mp-full-artist" class="mp-full-artist"></div>
+            </div>
+            <button type="button" class="mp-like mp-like-big" id="mp-full-like" aria-label="Me gusta" aria-pressed="false">👍</button>
+        </div>
+        <input type="range" id="mp-seek" class="mp-seek" min="0" max="100" value="0" />
+        <div class="mp-times"><span id="mp-cur">0:00</span><span id="mp-dur">0:00</span></div>
+        <div class="mp-full-ctrl">
+            <button type="button" class="mp-ic" id="mp-full-prev" aria-label="Anterior">⏮</button>
+            <button type="button" class="mp-round mp-round-big" id="mp-full-toggle" aria-label="Reproducir o pausar">▶</button>
+            <button type="button" class="mp-ic" id="mp-full-next" aria-label="Siguiente">⏭</button>
+        </div>
+
+        <section class="mp-explora" id="mp-explora" hidden>
+            <div class="mp-explora-titulo" id="mp-explora-titulo">Explora más</div>
+            <div class="mp-explora-grid" id="mp-explora-grid"></div>
+        </section>
+
+        <button type="button" class="mp-com-btn" id="mp-com-btn">💬 Comentarios de la canción</button>
+        <div class="mp-com" id="mp-com" hidden>
+            <div class="mp-com-head">
+                <span>Comentarios</span>
+                <button type="button" class="mp-com-x" id="mp-com-cerrar" aria-label="Cerrar comentarios">✕</button>
+            </div>
+            <form class="mp-com-form" id="mp-com-form">
+                <textarea id="mp-com-texto" maxlength="500" rows="2" placeholder="Escribe un comentario..."></textarea>
+                <button type="submit" class="mp-com-enviar">Enviar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/musicas-player.js" asp-append-version="true"></script>

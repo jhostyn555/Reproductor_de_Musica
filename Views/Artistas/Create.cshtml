@@ -1,0 +1,23 @@
+﻿@model EcommerceApp.Models.Artista
+@{
+    ViewData["Title"] = "Nuevo artista";
+    ViewData["ActiveMenu"] = "GenerosYArtistas";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/gestion-musica.css" asp-append-version="true" />
+
+<div class="page-heading">
+    <h1>Nuevo artista</h1>
+    <p>Los artistas se asignan a las canciones y a los álbumes</p>
+</div>
+
+<form asp-controller="Artistas" asp-action="Create" method="post" class="ga-form">
+    <div asp-validation-summary="ModelOnly" class="ga-err"></div>
+    <label>Nombre</label>
+    <input asp-for="Nombre" class="ga-input" maxlength="120" placeholder="Ej: Daddy Yankee" />
+    <span asp-validation-for="Nombre" class="ga-err"></span>
+    <div class="ga-actions-form">
+        <a asp-controller="Generos" asp-action="Index" class="ga-cancel">Cancelar</a>
+        <button type="submit" class="ga-btn">Guardar</button>
+    </div>
+</form>

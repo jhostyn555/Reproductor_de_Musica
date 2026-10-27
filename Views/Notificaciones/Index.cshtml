@@ -1,0 +1,68 @@
+﻿@model IEnumerable<EcommerceApp.Models.Musica>
+@{
+    ViewData["Title"] = "Notificaciones";
+    ViewData["ActiveMenu"] = "Notificaciones";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var nombres = (Dictionary<string, string>)ViewData["Nombres"]!;
+}
+
+<div class="page-heading">
+    <h1>Solicitudes de canciones</h1>
+    <p>Canciones enviadas por los clientes, pendientes de aprobación</p>
+</div>
+
+@if (TempData["Success"] != null) { <div class="nt-ok">@TempData["Success"]</div> }
+
+@if (!Model.Any())
+{
+    <div class="nt-vacio">No hay solicitudes pendientes.</div>
+}
+else
+{
+    <div class="nt-lista">
+        @foreach (var m in Model)
+        {
+            var artistas = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre));
+            var generos = string.Join(", ", m.MusicaGeneros.Select(mg => mg.Genero.Nombre));
+            var autor = m.CreadoPorId != null && nombres.ContainsKey(m.CreadoPorId) ? nombres[m.CreadoPorId] : "Usuario";
+            <article class="nt-item">
+                <div class="nt-cover">
+                    @if (!string.IsNullOrEmpty(m.ImagenUrl)) { <img src="@m.ImagenUrl" alt="" /> }
+                    else { <span>♪</span> }
+                </div>
+                <div class="nt-info">
+                    <div class="nt-titulo">@m.Nombre</div>
+                    <div class="nt-sub">@artistas @(string.IsNullOrEmpty(generos) ? "" : "· " + generos)</div>
+                    <div class="nt-autor">Enviada por <b>@autor</b> · @m.CreadoEn.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                    @if (!string.IsNullOrEmpty(m.AudioUrl))
+                    {
+                        <audio controls preload="none" src="@m.AudioUrl" class="nt-audio"></audio>
+                    }
+                </div>
+                <div class="nt-acciones">
+                    <form asp-action="Aprobar" asp-route-id="@m.Id" method="post"><button class="nt-btn ok" type="submit">Aprobar</button></form>
+                    <form asp-action="Rechazar" asp-route-id="@m.Id" method="post"><button class="nt-btn no" type="submit">Rechazar</button></form>
+                </div>
+            </article>
+        }
+    </div>
+}
+
+<style>
+    .nt-ok { padding: 12px 16px; border-radius: 10px; margin-bottom: 18px; background: rgba(34,197,94,.1); color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+    .nt-vacio { padding: 40px; text-align: center; color: var(--txt-muted); border: 1px dashed var(--border-col); border-radius: 12px; }
+    .nt-lista { display: grid; gap: 14px; }
+    .nt-item { display: flex; gap: 16px; align-items: center; background: var(--bg-card); border: 1px solid var(--border-col); border-radius: 14px; padding: 14px; flex-wrap: wrap; }
+    .nt-cover { width: 72px; height: 72px; border-radius: 10px; overflow: hidden; background: rgba(255,255,255,.05); display: flex; align-items: center; justify-content: center; color: var(--txt-muted); flex-shrink: 0; }
+    .nt-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .nt-info { flex: 1; min-width: 220px; }
+    .nt-titulo { font-weight: 700; color: var(--txt-primary); }
+    .nt-sub { font-size: .82rem; color: #22d3ee; margin-top: 2px; }
+    .nt-autor { font-size: .78rem; color: var(--txt-muted); margin-top: 4px; }
+    .nt-audio { margin-top: 8px; width: 100%; max-width: 360px; }
+    .nt-acciones { display: flex; gap: 8px; }
+    .nt-acciones form { margin: 0; }
+    .nt-btn { padding: 9px 16px; border-radius: 9px; font-weight: 600; font-size: .85rem; border: none; cursor: pointer; }
+    .nt-btn.ok { background: linear-gradient(135deg, #22c55e, #4ade80); color: #04121a; }
+    .nt-btn.no { background: rgba(248,113,113,.15); color: #f87171; border: 1px solid rgba(248,113,113,.4); }
+</style>

@@ -1,0 +1,670 @@
+@model EcommerceApp.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["ActiveMenu"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["SectionIcon"] = @"
+        <svg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 24 24'
+             fill='none' stroke='currentColor' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'>
+            <rect x='3' y='3' width='7' height='7'/>
+            <rect x='14' y='3' width='7' height='7'/>
+            <rect x='14' y='14' width='7' height='7'/>
+            <rect x='3' y='14' width='7' height='7'/>
+        </svg>";
+}
+
+<div class="dashboard-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div class="page-heading mb-0">
+        <h1 class="h3 fw-bold mb-1 text-white">Dashboard</h1>
+        <p class="text-secondary mb-0">Resumen general y métricas del sistema musical</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-controller="Musicas" asp-action="Create" class="btn btn-primary d-inline-flex align-items-center gap-2 custom-glow-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Subir Canción</span>
+        </a>
+        <a asp-controller="Artistas" asp-action="Create" class="btn btn-outline-light d-inline-flex align-items-center gap-2 custom-outline-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Nuevo Artista</span>
+        </a>
+    </div>
+</div>
+
+<!-- ================= 4 TARJETAS KPI ================= -->
+<div class="row g-3 mb-4">
+    <!-- Canciones -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="dash-card stat-card">
+            <div class="stat-icon-wrap icon-purple">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18V5l12-2v13"></path>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Canciones</span>
+                <h3 class="stat-number">@Model.TotalMusicas</h3>
+                <span class="stat-sub text-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                    En catálogo
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Artistas -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="dash-card stat-card">
+            <div class="stat-icon-wrap icon-cyan">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="22"></line>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Artistas</span>
+                <h3 class="stat-number">@Model.TotalArtistas</h3>
+                <span class="stat-sub text-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                    Registrados
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Usuarios -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="dash-card stat-card">
+            <div class="stat-icon-wrap icon-indigo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Comunidad</span>
+                <h3 class="stat-number">@Model.TotalUsuarios</h3>
+                <span class="stat-sub text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    Usuarios activos
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reproducciones -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="dash-card stat-card">
+            <div class="stat-icon-wrap icon-rose">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+            </div>
+            <div class="stat-content">
+                <span class="stat-label">Reproducciones</span>
+                <h3 class="stat-number">@Model.TotalReproducciones</h3>
+                <span class="stat-sub text-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+                    Historial total
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= SECCIÓN DE GRÁFICOS ================= -->
+<div class="row g-3 mb-4">
+    <!-- Gráfico de tendencia -->
+    <div class="col-12 col-xl-8">
+        <div class="dash-card h-100">
+            <div class="dash-card-header d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="card-title-custom mb-1">Tendencia de Reproducciones</h4>
+                    <p class="card-subtitle-custom mb-0">Actividad de oyentes durante los últimos 7 días</p>
+                </div>
+                <span class="badge bg-purple-soft text-purple">En Vivo</span>
+            </div>
+            <div class="chart-container" style="position: relative; height: 260px;">
+                <canvas id="reproduccionesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico de géneros -->
+    <div class="col-12 col-xl-4">
+        <div class="dash-card h-100">
+            <div class="dash-card-header mb-3">
+                <h4 class="card-title-custom mb-1">Top Géneros</h4>
+                <p class="card-subtitle-custom mb-0">Distribución de canciones por estilo</p>
+            </div>
+            <div class="chart-container d-flex align-items-center justify-content-center" style="position: relative; height: 260px;">
+                <canvas id="generosChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= SECCIÓN DE LISTAS Y ACTIVIDAD ================= -->
+<div class="row g-3">
+    <!-- Últimas canciones -->
+    <div class="col-12 col-xl-7">
+        <div class="dash-card h-100">
+            <div class="dash-card-header d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="card-title-custom mb-1">Últimas Canciones Agregadas</h4>
+                    <p class="card-subtitle-custom mb-0">Novedades recientes en el catálogo</p>
+                </div>
+                <a asp-controller="Musicas" asp-action="Index" class="see-all-link">Ver todas &rarr;</a>
+            </div>
+
+            @if (Model.UltimasMusicas.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table custom-dash-table mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Canción</th>
+                                <th>Género</th>
+                                <th class="text-end">Duración</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cancion in Model.UltimasMusicas)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="song-thumb">
+                                                @if (!string.IsNullOrEmpty(cancion.ImagenUrl))
+                                                {
+                                                    <img src="@cancion.ImagenUrl" alt="@cancion.Nombre" />
+                                                }
+                                                else
+                                                {
+                                                    <div class="song-thumb-placeholder">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div>
+                                                <div class="song-title">@cancion.Nombre</div>
+                                                <div class="song-artist">@cancion.Artistas</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="genre-pill">@cancion.Generos</span>
+                                    </td>
+                                    <td class="text-end font-monospace text-secondary">
+                                        @cancion.Duracion
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state text-center py-4">
+                    <p class="text-muted mb-2">No hay canciones registradas aún.</p>
+                    <a asp-controller="Musicas" asp-action="Create" class="btn btn-sm btn-outline-primary">Subir primera canción</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Últimos comentarios -->
+    <div class="col-12 col-xl-5">
+        <div class="dash-card h-100">
+            <div class="dash-card-header d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="card-title-custom mb-1">Comentarios Recientes</h4>
+                    <p class="card-subtitle-custom mb-0">Opiniones de la comunidad</p>
+                </div>
+                <a asp-controller="Admin" asp-action="Comentarios" class="see-all-link">Gestionar &rarr;</a>
+            </div>
+
+            @if (Model.UltimosComentarios.Any())
+            {
+                <div class="comments-feed">
+                    @foreach (var com in Model.UltimosComentarios)
+                    {
+                        <div class="comment-item d-flex gap-3 mb-3">
+                            <div class="user-avatar-circle">
+                                @if (!string.IsNullOrEmpty(com.UsuarioAvatar))
+                                {
+                                    <img src="@com.UsuarioAvatar" alt="@com.UsuarioNombre" />
+                                }
+                                else
+                                {
+                                    <span>@(com.UsuarioNombre.Substring(0, 1).ToUpper())</span>
+                                }
+                            </div>
+                            <div class="comment-body flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="comment-author">@com.UsuarioNombre</span>
+                                    <span class="comment-date text-muted">@com.Fecha.ToString("dd MMM")</span>
+                                </div>
+                                <div class="comment-song mb-1">
+                                    en <span class="text-purple-glow">@com.CancionNombre</span>
+                                </div>
+                                <p class="comment-text mb-0">"@com.Texto"</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state text-center py-4">
+                    <p class="text-muted mb-0">Sin comentarios recientes aún.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Estilos específicos del Dashboard con variables de admin-panel.css */
+    .dash-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-col);
+        border-radius: var(--radius);
+        padding: 20px;
+        transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .dash-card:hover {
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    /* KPI Cards */
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.15);
+    }
+
+    .stat-icon-wrap {
+        width: 54px;
+        height: 54px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .icon-purple {
+        background: rgba(139, 92, 246, 0.15);
+        color: #a78bfa;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .icon-cyan {
+        background: rgba(6, 182, 212, 0.15);
+        color: #22d3ee;
+        border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    .icon-indigo {
+        background: rgba(99, 102, 241, 0.15);
+        color: #818cf8;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .icon-rose {
+        background: rgba(244, 63, 94, 0.15);
+        color: #fb7185;
+        border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .stat-label {
+        font-size: 0.82rem;
+        color: var(--txt-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        display: block;
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--txt-primary);
+        margin: 2px 0;
+        line-height: 1.1;
+    }
+
+    .stat-sub {
+        font-size: 0.78rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* Botones y Glow */
+    .custom-glow-btn {
+        background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+        border: none;
+        padding: 8px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        transition: 0.2s;
+    }
+
+    .custom-glow-btn:hover {
+        background: linear-gradient(135deg, #9d74ff, #7c3aed);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+    }
+
+    .custom-outline-btn {
+        border: 1px solid var(--border-col);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--txt-primary);
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    .custom-outline-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    /* Tipografía y Badges */
+    .card-title-custom {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--txt-primary);
+    }
+
+    .card-subtitle-custom {
+        font-size: 0.82rem;
+        color: var(--txt-secondary);
+    }
+
+    .bg-purple-soft {
+        background: rgba(139, 92, 246, 0.15);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .text-purple {
+        color: #c4b5fd !important;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+
+    .see-all-link {
+        font-size: 0.82rem;
+        color: var(--clr-primary);
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .see-all-link:hover {
+        color: #a78bfa;
+        text-decoration: underline;
+    }
+
+    /* Tabla personalizada */
+    .custom-dash-table {
+        color: var(--txt-primary);
+        margin-bottom: 0;
+    }
+
+    .custom-dash-table thead th {
+        background: transparent;
+        color: var(--txt-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        border-bottom: 1px solid var(--border-col);
+        padding: 10px 8px;
+    }
+
+    .custom-dash-table tbody td {
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 12px 8px;
+    }
+
+    .song-thumb {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #1e2438;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .song-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .song-thumb-placeholder {
+        color: var(--txt-muted);
+    }
+
+    .song-title {
+        font-weight: 600;
+        font-size: 0.92rem;
+        color: var(--txt-primary);
+    }
+
+    .song-artist {
+        font-size: 0.8rem;
+        color: var(--clr-accent);
+    }
+
+    .genre-pill {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--txt-secondary);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    /* Comentarios */
+    .user-avatar-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .user-avatar-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .comment-item {
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .comment-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0 !important;
+        padding-bottom: 0;
+    }
+
+    .comment-author {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--txt-primary);
+    }
+
+    .comment-date {
+        font-size: 0.75rem;
+    }
+
+    .comment-song {
+        font-size: 0.78rem;
+        color: var(--txt-secondary);
+    }
+
+    .text-purple-glow {
+        color: #c4b5fd;
+        font-weight: 500;
+    }
+
+    .comment-text {
+        font-size: 0.84rem;
+        color: var(--txt-secondary);
+        font-style: italic;
+    }
+</style>
+
+@section Scripts {
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Paleta del tema
+            const purpleColor = '#8b5cf6';
+            const purpleFade  = 'rgba(139, 92, 246, 0.15)';
+            const cyanColor   = '#06b6d4';
+            const indigoColor = '#6366f1';
+            const roseColor   = '#f43f5e';
+            const emeraldColor= '#10b981';
+
+            // 1. Gráfico de Reproducciones (Línea suave con gradiente)
+            const ctxRepro = document.getElementById('reproduccionesChart')?.getContext('2d');
+            if (ctxRepro) {
+                const gradient = ctxRepro.createLinearGradient(0, 0, 0, 240);
+                gradient.addColorStop(0, 'rgba(139, 92, 246, 0.4)');
+                gradient.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
+
+                new Chart(ctxRepro, {
+                    type: 'line',
+                    data: {
+                        labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.DiasLabels)),
+                        datasets: [{
+                            label: 'Reproducciones',
+                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReproduccionesDias)),
+                            borderColor: purpleColor,
+                            borderWidth: 3,
+                            backgroundColor: gradient,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: purpleColor,
+                            pointBorderColor: '#fff',
+                            pointHoverRadius: 6,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#161a30',
+                                titleColor: '#fff',
+                                bodyColor: '#cbd5e1',
+                                borderColor: 'rgba(139, 92, 246, 0.4)',
+                                borderWidth: 1,
+                                padding: 10,
+                                displayColors: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                                ticks: { color: '#94a3b8', font: { size: 11 } }
+                            },
+                            y: {
+                                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                                ticks: { color: '#94a3b8', font: { size: 11 }, precision: 0 },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Gráfico de Géneros (Doughnut)
+            const ctxGen = document.getElementById('generosChart')?.getContext('2d');
+            if (ctxGen) {
+                new Chart(ctxGen, {
+                    type: 'doughnut',
+                    data: {
+                        labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GenerosLabels)),
+                        datasets: [{
+                            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.GenerosCantidad)),
+                            backgroundColor: [
+                                purpleColor,
+                                cyanColor,
+                                indigoColor,
+                                roseColor,
+                                emeraldColor
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#111425'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#cbd5e1',
+                                    boxWidth: 12,
+                                    padding: 12,
+                                    font: { size: 11 }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: '#161a30',
+                                titleColor: '#fff',
+                                bodyColor: '#cbd5e1',
+                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                                borderWidth: 1
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -1,0 +1,89 @@
+@model EcommerceApp.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="auth-card">
+    <div class="auth-header">
+        <div class="auth-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+        </div>
+        <h1 class="auth-title">Bienvenido</h1>
+        <p class="auth-subtitle">Inicia sesión en tu cuenta</p>
+    </div>
+
+    <form asp-action="Login" method="post" class="auth-form">
+        <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+        <div asp-validation-summary="ModelOnly" class="alert-error"></div>
+
+        <div class="form-field">
+            <label asp-for="Email" class="field-label">Correo electrónico</label>
+            <div class="field-wrapper">
+                <span class="field-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                </span>
+                <input asp-for="Email" class="field-input" placeholder="tu@email.com" autocomplete="email" />
+            </div>
+            <span asp-validation-for="Email" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Password" class="field-label">Contraseña</label>
+            <div class="field-wrapper">
+                <span class="field-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </span>
+                <input asp-for="Password" class="field-input" placeholder="••••••••" autocomplete="current-password" />
+            </div>
+            <span asp-validation-for="Password" class="field-error"></span>
+        </div>
+
+        <div class="form-check-row">
+            <label class="custom-check">
+                <input asp-for="RememberMe" type="checkbox" />
+                <span class="checkmark"></span>
+                <span class="check-label">Recordarme</span>
+            </label>
+        </div>
+
+        <button type="submit" class="btn-auth btn-primary-auth" id="btn-login">
+            <span>Iniciar Sesión</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+            </svg>
+        </button>
+    </form>
+
+    <div class="auth-footer">
+        <p>¿No tienes cuenta? <a asp-action="Register" class="auth-link">Regístrate gratis</a></p>
+    </div>
+
+    <div class="demo-credentials">
+        <p class="demo-title">🔑 Credenciales de prueba</p>
+        <div class="demo-row">
+            <span class="demo-badge admin">Admin</span>
+            <span class="demo-info">admin@ecommerce.com / Admin123!</span>
+        </div>
+        <div class="demo-row">
+            <span class="demo-badge user">Usuario</span>
+            <span class="demo-info">user@ecommerce.com / User123!</span>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

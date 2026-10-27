@@ -1,0 +1,64 @@
+﻿@model IEnumerable<EcommerceApp.Models.Musica>
+@{
+    ViewData["Title"] = "Comentarios";
+    ViewData["ActiveMenu"] = "Comentarios";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var conteos = (Dictionary<int, int>)ViewData["Conteos"]!;
+}
+
+<div class="page-heading">
+    <h1>Comentarios</h1>
+    <p>Canciones y sus comentarios. Toca una canción para ver sus comentarios (solo lectura).</p>
+</div>
+
+<style>
+    .cmx-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+    .cmx-card { display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: inherit; background: var(--bg-card); border: 1px solid var(--border-col); border-radius: 14px; padding: 12px; min-width: 0; }
+    .cmx-card:hover { border-color: var(--clr-primary, #7c5cff); }
+    .cmx-cover { position: relative; aspect-ratio: 1 / 1; border-radius: 10px; overflow: hidden; background: rgba(255,255,255,.05); display: flex; align-items: center; justify-content: center; color: var(--txt-muted); font-size: 2rem; }
+    .cmx-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cmx-badge { position: absolute; top: 8px; right: 8px; font-size: .72rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(0,0,0,.7); color: #fff; }
+    .cmx-titulo { font-weight: 700; color: var(--txt-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cmx-artista { font-size: .84rem; color: #22d3ee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cmx-generos { display: flex; flex-wrap: wrap; gap: 6px; }
+    .cmx-genero { font-size: .72rem; padding: 3px 9px; border-radius: 999px; background: rgba(124,92,255,.2); color: #c4b5fd; }
+    .cmx-total { font-size: .78rem; color: var(--txt-muted); margin-top: auto; }
+    .cmx-vacio { padding: 40px; text-align: center; color: var(--txt-muted); border: 1px dashed var(--border-col); border-radius: 12px; }
+</style>
+
+@if (!Model.Any())
+{
+    <div class="cmx-vacio">Todavía no hay canciones.</div>
+}
+else
+{
+    <div class="cmx-grid">
+        @foreach (var m in Model)
+        {
+            var artistas = string.Join(", ", m.MusicaArtistas.Select(ma => ma.Artista.Nombre));
+            var total = conteos.ContainsKey(m.Id) ? conteos[m.Id] : 0;
+            <a class="cmx-card" asp-action="Details" asp-route-id="@m.Id">
+                <div class="cmx-cover">
+                    @if (!string.IsNullOrEmpty(m.ImagenUrl))
+                    {
+                        <img src="@m.ImagenUrl" alt="@m.Nombre" loading="lazy" />
+                    }
+                    else
+                    {
+                        <span>♪</span>
+                    }
+                    <span class="cmx-badge">@total @(total == 1 ? "comentario" : "comentarios")</span>
+                </div>
+                <div class="cmx-titulo" title="@m.Nombre">@m.Nombre</div>
+                <div class="cmx-artista">@(string.IsNullOrEmpty(artistas) ? "Sin artista" : artistas)</div>
+                <div class="cmx-generos">
+                    @foreach (var mg in m.MusicaGeneros)
+                    {
+                        <span class="cmx-genero">@mg.Genero.Nombre</span>
+                    }
+                </div>
+                <div class="cmx-total">Estado: @m.Estado</div>
+            </a>
+        }
+    </div>
+}

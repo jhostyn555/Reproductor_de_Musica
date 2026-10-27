@@ -1,0 +1,23 @@
+@model EcommerceApp.Models.MusicaBrowseViewModel
+@{
+    ViewData["Title"] = "Inicio";
+    ViewData["ActiveMenu"] = "Inicio";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="up-page-heading">
+    <h1>Inicio</h1>
+    <p>Tu página de inicio</p>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="mu-ok">@TempData["Success"]</div>
+}
+
+@await Html.PartialAsync("_MusicaContenido", Model)
+
+@section Scripts {
+    <link rel="stylesheet" href="~/css/music-user.css" asp-append-version="true" />
+    <script src="~/js/cancion-menu.js" asp-append-version="true"></script>
+}

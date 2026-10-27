@@ -1,0 +1,242 @@
+@model EcommerceApp.Models.MusicaViewModel
+@{
+    ViewData["Title"]      = "Nueva Canción";
+    ViewData["ActiveMenu"] = "Musicas";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-heading">
+    <h1>Nueva Canción</h1>
+    <p>Completa los datos para agregar una canción al catálogo</p>
+</div>
+
+<div class="form-card">
+    <form asp-controller="Musicas" asp-action="Create" method="post" enctype="multipart/form-data" id="createForm">
+            <input type="hidden" asp-for="DuracionSegundos" />
+        @Html.AntiForgeryToken()
+
+        <div class="form-row-2">
+            <!-- Nombre -->
+            <div class="form-group full-width">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control-dark" placeholder="Ej: Blinding Lights" />
+                <span asp-validation-for="Nombre" class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-row-2">
+            <!-- Audio -->
+            <div class="form-group">
+                <label class="form-label">Archivo de Audio <span class="required-star">*</span></label>
+                <label class="file-drop-zone" id="audioDropZone">
+                    <input type="file" asp-for="ArchivoAudio" accept="audio/*" id="audioInput" class="file-input-hidden" />
+                    <div class="file-drop-content" id="audioContent">
+                        <div class="file-drop-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                        </div>
+                        <span class="file-drop-text">Haz clic o arrastra un archivo de audio</span>
+                        <span class="file-drop-sub">MP3, WAV, OGG — máx. 50 MB</span>
+                    </div>
+                    <div class="file-selected" id="audioSelected" style="display:none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span id="audioName"></span>
+                    </div>
+                </label>
+                <span asp-validation-for="ArchivoAudio" class="field-error"></span>
+                <div class="url-input-wrap">
+                    <span class="url-or">o pega un enlace de audio</span>
+                    <input asp-for="UrlAudio" type="url" class="form-control-dark" placeholder="https://ejemplo.com/cancion.mp3" />
+                    <span class="url-hint">Si subes un archivo, se usará el archivo y se ignorará el enlace.</span>
+                    <span asp-validation-for="UrlAudio" class="field-error"></span>
+                </div>
+            </div>
+
+            <!-- Imagen -->
+            <div class="form-group">
+                <label class="form-label">Imagen de Portada</label>
+                <label class="file-drop-zone" id="imgDropZone">
+                    <input type="file" asp-for="ArchivoImagen" accept="image/*" id="imgInput" class="file-input-hidden" />
+                    <div class="file-drop-content" id="imgContent">
+                        <div class="file-drop-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        </div>
+                        <span class="file-drop-text">Haz clic o arrastra una imagen</span>
+                        <span class="file-drop-sub">JPG, PNG, WEBP — 500×500 px recomendado</span>
+                    </div>
+                    <img id="imgPreview" src="" alt="preview" class="img-preview" style="display:none" />
+                </label>
+                <div class="url-input-wrap">
+                    <span class="url-or">o pega un enlace de imagen</span>
+                    <input asp-for="UrlImagen" type="url" class="form-control-dark" placeholder="https://ejemplo.com/portada.jpg" />
+                    <span asp-validation-for="UrlImagen" class="field-error"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Géneros -->
+        <div class="form-group">
+            <label class="form-label">Géneros</label>
+            <div class="chips-container" id="generosChips">
+                @for (int i = 0; i < Model.GenerosDisponibles.Count; i++)
+                {
+                    var item = Model.GenerosDisponibles[i];
+                    var isChecked = Model.GenerosSeleccionados.Contains(int.Parse(item.Value));
+                    <label class="chip @(isChecked ? "chip-selected" : "")">
+                        <input type="checkbox" name="GenerosSeleccionados" value="@item.Value"
+                               @(isChecked ? "checked" : "") class="chip-checkbox" />
+                        @item.Text
+                    </label>
+                }
+            </div>
+        </div>
+
+        <!-- Artistas -->
+        <div class="form-group">
+            <label class="form-label">Artistas</label>
+            <div class="chips-container" id="artistasChips">
+                @for (int i = 0; i < Model.ArtistasDisponibles.Count; i++)
+                {
+                    var item = Model.ArtistasDisponibles[i];
+                    var isChecked = Model.ArtistasSeleccionados.Contains(int.Parse(item.Value));
+                    <label class="chip @(isChecked ? "chip-selected" : "")">
+                        <input type="checkbox" name="ArtistasSeleccionados" value="@item.Value"
+                               @(isChecked ? "checked" : "") class="chip-checkbox" />
+                        @item.Text
+                    </label>
+                }
+            </div>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="field-error mb-3"></div>
+
+        <div class="form-actions">
+            <a asp-controller="Musicas" asp-action="Index" class="btn-secondary-action">Cancelar</a>
+            <button type="submit" class="btn-primary-action" id="submitBtn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Guardar Canción
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+@await Html.PartialAsync("_ValidationScriptsPartial")
+<style>
+.form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-col);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 860px;
+}
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@@media (max-width: 600px) { .form-row-2 { grid-template-columns: 1fr; } }
+.full-width { grid-column: 1 / -1; }
+.form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.form-label { font-size: .82rem; font-weight: 600; color: var(--txt-secondary); text-transform: uppercase; letter-spacing: .5px; }
+.required-star { color: #f87171; }
+.form-control-dark {
+    background: rgba(255,255,255,.04); border: 1px solid var(--border-col);
+    border-radius: 10px; padding: 11px 14px; color: var(--txt-primary);
+    font-size: .9rem; font-family: var(--font); width: 100%;
+    transition: border-color .2s, box-shadow .2s;
+}
+.form-control-dark:focus { outline: none; border-color: var(--clr-primary); box-shadow: 0 0 0 3px var(--clr-primary-glow); }
+.field-error { font-size: .78rem; color: #f87171; }
+
+/* File Drop */
+.file-drop-zone {
+    display: flex; border: 2px dashed var(--border-col); border-radius: 12px;
+    padding: 24px; text-align: center; cursor: pointer;
+    transition: border-color .2s, background .2s; position: relative;
+    min-height: 130px; align-items: center; justify-content: center;
+}
+.file-drop-zone:hover { border-color: var(--clr-primary); background: rgba(139,92,246,.04); }
+.file-input-hidden { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.file-drop-content { display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
+.file-drop-icon { color: var(--txt-muted); }
+.file-drop-text { font-size: .85rem; color: var(--txt-secondary); font-weight: 500; }
+.file-drop-sub  { font-size: .72rem; color: var(--txt-muted); }
+.file-selected  { display: flex; align-items: center; gap: 8px; color: #4ade80; font-size: .85rem; font-weight: 600; }
+.img-preview    { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; }
+.url-input-wrap { display: flex; flex-direction: column; gap: 6px; }
+.url-or { font-size: .72rem; color: var(--txt-muted); text-transform: uppercase; letter-spacing: .5px; }
+.url-hint { font-size: .72rem; color: var(--txt-muted); }
+
+/* Chips */
+.chips-container { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 20px; cursor: pointer;
+    border: 1px solid var(--border-col); background: rgba(255,255,255,.03);
+    color: var(--txt-secondary); font-size: .82rem; font-weight: 500;
+    transition: background .2s, border-color .2s, color .2s; user-select: none;
+}
+.chip:hover { border-color: rgba(139,92,246,.4); color: var(--txt-primary); }
+.chip-selected { background: rgba(139,92,246,.18); border-color: rgba(139,92,246,.5); color: #c4b5fd; }
+.chip-checkbox { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+
+/* Actions */
+.form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 8px; }
+.btn-primary-action {
+    display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px;
+    background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-2));
+    color: #fff; border-radius: 10px; font-size: .875rem; font-weight: 600;
+    border: none; cursor: pointer; transition: opacity .2s, transform .2s;
+    text-decoration: none; box-shadow: 0 4px 16px var(--clr-primary-glow);
+}
+.btn-primary-action:hover { opacity: .88; transform: translateY(-1px); color: #fff; }
+.btn-secondary-action {
+    display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px;
+    background: rgba(255,255,255,.05); color: var(--txt-secondary);
+    border: 1px solid var(--border-col); border-radius: 10px;
+    font-size: .875rem; font-weight: 600; cursor: pointer;
+    transition: background .2s, color .2s; text-decoration: none;
+}
+.btn-secondary-action:hover { background: rgba(255,255,255,.09); color: var(--txt-primary); }
+</style>
+<script>
+// Chip toggle
+document.querySelectorAll('.chip').forEach(chip => {
+    const cb = chip.querySelector('.chip-checkbox');
+    chip.addEventListener('click', () => {
+        // Timeout ensures checkbox state is updated before we read it
+        setTimeout(() => chip.classList.toggle('chip-selected', cb.checked), 0);
+    });
+    if (cb.checked) chip.classList.add('chip-selected');
+});
+
+// Audio preview
+document.getElementById('audioInput').addEventListener('change', function () {
+    if (this.files[0]) {
+        document.getElementById('audioContent').style.display = 'none';
+        const sel = document.getElementById('audioSelected');
+        document.getElementById('audioName').textContent = this.files[0].name;
+        sel.style.display = 'flex';
+    }
+});
+
+// Image preview
+document.getElementById('imgInput').addEventListener('change', function () {
+    if (this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const preview = document.getElementById('imgPreview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            document.getElementById('imgContent').style.display = 'none';
+        };
+        reader.readAsDataURL(this.files[0]);
+    }
+});
+
+// Loading state on submit
+document.getElementById('createForm').addEventListener('submit', function () {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Subiendo...';
+});
+</script>
+}
+
+<script src="~/js/duracion-audio.js" asp-append-version="true"></script>

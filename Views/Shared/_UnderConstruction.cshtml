@@ -1,0 +1,34 @@
+@* _UnderConstruction.cshtml — Partial compartido para secciones en construcción *@
+@{
+    var sectionName = ViewData["Title"]?.ToString() ?? "Esta sección";
+    var iconSvg     = ViewData["SectionIcon"]?.ToString() ?? @"
+        <svg xmlns='http://www.w3.org/2000/svg' width='38' height='38' viewBox='0 0 24 24'
+             fill='none' stroke='currentColor' stroke-width='1.8'
+             stroke-linecap='round' stroke-linejoin='round'>
+            <circle cx='12' cy='12' r='10'/>
+            <line x1='12' y1='8' x2='12' y2='12'/>
+            <line x1='12' y1='16' x2='12.01' y2='16'/>
+        </svg>";
+}
+
+<div class="under-construction">
+    <div class="uc-icon">
+        @Html.Raw(iconSvg)
+    </div>
+
+    <h2 class="uc-title">Panel en construcción</h2>
+
+    <p class="uc-text">
+        La sección de <strong>@sectionName</strong> está siendo desarrollada.<br>
+        Pronto estará disponible con todas sus funcionalidades.
+    </p>
+
+    <div class="uc-badge">
+        <div class="uc-dots">
+            <div class="uc-dot"></div>
+            <div class="uc-dot"></div>
+            <div class="uc-dot"></div>
+        </div>
+        En desarrollo
+    </div>
+</div>

@@ -1,0 +1,45 @@
+﻿@model EcommerceApp.Models.Anuncio
+@{
+    ViewData["Title"] = "Nuevo anuncio";
+    ViewData["ActiveMenu"] = "Publicidad";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="page-heading">
+    <h1>Nuevo anuncio</h1>
+    <p>Se mostrará en el inicio de los clientes mientras esté activo</p>
+</div>
+
+<form asp-action="Create" method="post" class="an-form">
+    <div asp-validation-summary="ModelOnly" class="an-err"></div>
+
+    <label>Título</label>
+    <input asp-for="Titulo" class="an-input" maxlength="120" placeholder="Ej: Nuevo álbum disponible" />
+    <span asp-validation-for="Titulo" class="an-err"></span>
+
+    <label>URL de la imagen</label>
+    <input asp-for="ImagenUrl" type="url" class="an-input" placeholder="https://ejemplo.com/banner.jpg" />
+    <span asp-validation-for="ImagenUrl" class="an-err"></span>
+
+    <label>Enlace al hacer click (opcional)</label>
+    <input asp-for="Enlace" type="url" class="an-input" placeholder="https://ejemplo.com" />
+    <span asp-validation-for="Enlace" class="an-err"></span>
+
+    <label class="an-check"><input asp-for="Activo" /> Activo</label>
+
+    <div class="an-actions">
+        <a asp-action="Index" class="an-cancel">Cancelar</a>
+        <button type="submit" class="an-btn">Guardar anuncio</button>
+    </div>
+</form>
+
+<style>
+    .an-form { max-width: 560px; display: grid; gap: 6px; }
+    .an-form label { font-size: .82rem; color: var(--txt-secondary); margin-top: 12px; }
+    .an-input { padding: 10px 12px; border-radius: 9px; background: var(--bg-card); border: 1px solid var(--border-col); color: var(--txt-primary); }
+    .an-check { display: flex; align-items: center; gap: 8px; }
+    .an-err { color: #f87171; font-size: .8rem; }
+    .an-actions { display: flex; justify-content: flex-end; gap: 12px; align-items: center; margin-top: 20px; }
+    .an-cancel { color: var(--txt-secondary); text-decoration: none; font-size: .88rem; }
+    .an-btn { padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: .88rem; color: #fff; border: none; background: linear-gradient(135deg, var(--clr-primary, #7c5cff), var(--clr-primary-2, #a78bfa)); cursor: pointer; }
+</style>
