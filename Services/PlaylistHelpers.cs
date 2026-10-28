@@ -7,6 +7,9 @@ namespace EcommerceApp.Services
 {
     public static class PlaylistHelpers
     {
+        // Degradado "aleatorio" para la portada de una playlist (0-9). Es estable: el mismo id siempre da el mismo color.
+        public static int Gradiente(int id) => (int)((((uint)id * 2654435761u) >> 16) % 10u);
+
         // Canciones aprobadas que se pueden agregar a una playlist.
         public static async Task<List<MusicaOpcion>> DisponiblesAsync(ApplicationDbContext db)
         {

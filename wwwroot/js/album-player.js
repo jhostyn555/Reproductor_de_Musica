@@ -3,6 +3,9 @@
 // - Pila (Stack, LIFO): historial de canciones reproducidas. "Anterior" desapila.
 // Mientras suena una canción, elegir otra la agrega a la cola: la actual no se detiene.
 (function () {
+    var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+    var ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
+
     var root = document.getElementById('album-root');
     if (!root) return;
     var urlHistorial = root.dataset.urlHistorial;
@@ -50,7 +53,7 @@
             nowTitulo.textContent = actual.nombre;
             nowArtista.textContent = actual.artista;
         }
-        btnToggle.textContent = audio.paused ? '▶' : '⏸';
+        btnToggle.innerHTML = audio.paused ? ICON_PLAY : ICON_PAUSE;
         qnEl.textContent = cola.length;
         hnEl.textContent = pila.length;
         marcarItems();

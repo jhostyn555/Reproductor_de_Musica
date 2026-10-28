@@ -1,7 +1,7 @@
 ﻿// Reproductor de la página de músicas (Inicio y Músicas).
 // - Cola (Queue, FIFO): la lista de canciones en el orden en que se muestran. Al terminar una, sigue la siguiente.
 // - Pila (Stack, LIFO): historial de canciones reproducidas. "Anterior" desapila.
-// - 👍 guarda la canción como favorita. Los comentarios se publican por canción.
+// - El corazón guarda la canción como favorita. Los comentarios se publican por canción.
 // - Sin sesión, al intentar escuchar se muestra el inicio de sesión.
 (function () {
     var root = document.getElementById('mu-player');
@@ -17,6 +17,12 @@
     var urlComentar = root.dataset.urlComentar;
     var tokenEl = document.querySelector('input[name="__RequestVerificationToken"]');
 
+    var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+    var ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
+
+    var ICON_MAX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+    var ICON_MIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>';
+
     function $(id) { return document.getElementById(id); }
     function token() { return tokenEl ? tokenEl.value : ''; }
 
@@ -30,7 +36,7 @@
     var fullImg = $('mp-full-img'), fullTitulo = $('mp-full-title'), fullArtista = $('mp-full-artist');
     var fullToggle = $('mp-full-toggle'), fullPrev = $('mp-full-prev'), fullNext = $('mp-full-next');
     var fullLike = $('mp-full-like'), seek = $('mp-seek'), curEl = $('mp-cur'), durEl = $('mp-dur');
-    var cerrar = $('mp-close');
+    var cerrar = $('mp-close'), bg = $('mp-bg');
     var btnMax = $('mp-max'), btnSalir = $('mp-salir');
     var explora = $('mp-explora'), exTit = $('mp-explora-titulo'), exGrid = $('mp-explora-grid');
     var comBtn = $('mp-com-btn'), comPanel = $('mp-com'), comCerrar = $('mp-com-cerrar');
@@ -54,9 +60,12 @@
         fullTitulo.textContent = t.nombre;
         miniArtista.textContent = t.artista;
         fullArtista.textContent = t.artista;
-        var icono = audio.paused ? '▶' : '⏸';
-        miniToggle.textContent = icono;
-        fullToggle.textContent = icono;
+        var icono = audio.paused ? ICON_PLAY : ICON_PAUSE;
+        miniToggle.innerHTML = icono;
+        fullToggle.innerHTML = icono;
+        root.classList.toggle('is-paused', audio.paused);
+        // Fondo difuminado con los colores de la portada (como Apple Music)
+        bg.style.backgroundImage = t.imagen ? 'url("' + String(t.imagen).replace(/"/g, '%22') + '")' : 'none';
         [miniLike, fullLike].forEach(function (b) {
             b.classList.toggle('is-liked', !!t.meGusta);
             b.setAttribute('aria-pressed', String(!!t.meGusta));
@@ -239,7 +248,7 @@
     });
     document.addEventListener('fullscreenchange', function () {
         btnMax.title = document.fullscreenElement ? 'Salir de pantalla completa' : 'Maximizar';
-        btnMax.textContent = document.fullscreenElement ? '🗗' : '⛶';
+        btnMax.innerHTML = document.fullscreenElement ? ICON_MIN : ICON_MAX;
     });
 
     // Salir: detiene la música y cierra el reproductor
@@ -262,14 +271,17 @@
     audio.addEventListener('play', pintar);
     audio.addEventListener('pause', pintar);
     audio.addEventListener('ended', siguiente);                          // siguiente automática
-    audio.addEventListener('loadedmetadata', function () { durEl.textContent = mmss(audio.duration); });
+    audio.addEventListener('loadedmetadata', function () { durEl.textContent = '-' + mmss(audio.duration); });
     audio.addEventListener('timeupdate', function () {
         var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
         miniFill.style.width = pct + '%';
         seek.value = pct;
+        seek.style.setProperty('--p', pct + '%');
         curEl.textContent = mmss(audio.currentTime);
+        if (audio.duration) durEl.textContent = '-' + mmss(audio.duration - audio.currentTime);
     });
     seek.addEventListener('input', function () {
+        seek.style.setProperty('--p', seek.value + '%');
         if (audio.duration) audio.currentTime = (seek.value / 100) * audio.duration;
     });
 })();

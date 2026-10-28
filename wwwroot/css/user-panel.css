@@ -69,7 +69,6 @@ button {
     z-index: 500;
     transition: width var(--tr), transform var(--tr);
     overflow: hidden;
-    box-shadow: 4px 0 40px rgba(0,0,0,0.5);
 }
 
     .up-sidebar.collapsed {
@@ -146,10 +145,26 @@ button {
 .up-sidebar.collapsed .up-link-logout {
     justify-content: center;
     padding: 12px 0;
+    gap: 0; /* sin el espacio del texto oculto, el ícono queda realmente centrado */
 }
 
 .up-sidebar.collapsed .up-sidebar-footer {
     justify-content: center;
+    gap: 0;
+}
+
+/* Colapsado: en el encabezado solo queda el botón de menú, centrado (antes el logo y el botón se encimaban) */
+.up-sidebar.collapsed .up-sidebar-header {
+    justify-content: center;
+    padding: 18px 0;
+}
+
+.up-sidebar.collapsed .up-brand {
+    display: none;
+}
+
+.up-sidebar.collapsed .up-nav-divider {
+    margin: 10px 14px;
 }
 
 /* ── Nav ── */
@@ -171,6 +186,8 @@ button {
 
 .up-menu {
     list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .up-menu-item {
@@ -201,7 +218,6 @@ button {
     background: var(--up-primary-dim);
     color: var(--up-primary);
     font-weight: 600;
-    box-shadow: inset 3px 0 0 var(--up-primary);
 }
 
 .up-menu-item.active .up-menu-icon svg {

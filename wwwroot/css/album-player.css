@@ -407,3 +407,47 @@
         height: 160px;
     }
 }
+
+
+/* Íconos SVG de reproducción (reemplazan los símbolos de texto) */
+.ab-play-all {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .15s ease;
+}
+
+    .ab-play-all:hover {
+        transform: scale(1.06);
+    }
+
+    .ab-play-all svg {
+        width: 26px;
+        height: 26px;
+    }
+
+.ab-thumb-play svg {
+    width: 18px;
+    height: 18px;
+}
+
+.ab-tile-img .ab-thumb-play svg {
+    width: 30px;
+    height: 30px;
+}
+
+.ab-ctrl button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .ab-ctrl button svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .ab-ctrl #ab-toggle svg {
+        width: 18px;
+        height: 18px;
+    }

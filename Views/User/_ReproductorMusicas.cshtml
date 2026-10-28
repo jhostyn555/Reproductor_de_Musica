@@ -20,21 +20,22 @@
             </div>
         </div>
         <div class="mp-mini-ctrl">
-            <button type="button" class="mp-like" id="mp-mini-like" aria-label="Me gusta" aria-pressed="false">👍</button>
-            <button type="button" class="mp-ic" id="mp-mini-prev" aria-label="Anterior">⏮</button>
-            <button type="button" class="mp-round" id="mp-mini-toggle" aria-label="Reproducir o pausar">▶</button>
-            <button type="button" class="mp-ic" id="mp-mini-next" aria-label="Siguiente">⏭</button>
+            <button type="button" class="mp-like" id="mp-mini-like" aria-label="Me gusta" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.2-9C1.4 8.9 3.4 5 7 5c2 0 3.7 1.2 5 3 1.3-1.8 3-3 5-3 3.6 0 5.6 3.9 4.2 7C19 16.6 12 21 12 21z"/></svg></button>
+            <button type="button" class="mp-ic" id="mp-mini-prev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6z"/><path d="M19 6v12l-9-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+            <button type="button" class="mp-round" id="mp-mini-toggle" aria-label="Reproducir o pausar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+            <button type="button" class="mp-ic" id="mp-mini-next" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2z"/><path d="M5 6v12l9-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
         </div>
         <div class="mp-mini-progress"><div id="mp-mini-fill"></div></div>
     </div>
 
     <div class="mp-full" id="mp-full">
+        <div class="mp-bg" id="mp-bg" aria-hidden="true"></div>
         <div class="mp-full-top">
-            <button type="button" class="mp-close" id="mp-close" aria-label="Minimizar" title="Minimizar">⌄</button>
+            <button type="button" class="mp-close" id="mp-close" aria-label="Minimizar" title="Minimizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
             <span>Reproduciendo</span>
             <div class="mp-win">
-                <button type="button" class="mp-win-btn" id="mp-max" aria-label="Maximizar" title="Maximizar">⛶</button>
-                <button type="button" class="mp-win-btn" id="mp-salir" aria-label="Salir del reproductor" title="Salir">✕</button>
+                <button type="button" class="mp-win-btn" id="mp-max" aria-label="Maximizar" title="Maximizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+                <button type="button" class="mp-win-btn" id="mp-salir" aria-label="Salir del reproductor" title="Salir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
             </div>
         </div>
         <div class="mp-full-cover"><img id="mp-full-img" alt="" /></div>
@@ -43,14 +44,14 @@
                 <div id="mp-full-title" class="mp-full-title"></div>
                 <div id="mp-full-artist" class="mp-full-artist"></div>
             </div>
-            <button type="button" class="mp-like mp-like-big" id="mp-full-like" aria-label="Me gusta" aria-pressed="false">👍</button>
+            <button type="button" class="mp-like mp-like-big" id="mp-full-like" aria-label="Me gusta" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 21s-7-4.4-9.2-9C1.4 8.9 3.4 5 7 5c2 0 3.7 1.2 5 3 1.3-1.8 3-3 5-3 3.6 0 5.6 3.9 4.2 7C19 16.6 12 21 12 21z"/></svg></button>
         </div>
         <input type="range" id="mp-seek" class="mp-seek" min="0" max="100" value="0" />
         <div class="mp-times"><span id="mp-cur">0:00</span><span id="mp-dur">0:00</span></div>
         <div class="mp-full-ctrl">
-            <button type="button" class="mp-ic" id="mp-full-prev" aria-label="Anterior">⏮</button>
-            <button type="button" class="mp-round mp-round-big" id="mp-full-toggle" aria-label="Reproducir o pausar">▶</button>
-            <button type="button" class="mp-ic" id="mp-full-next" aria-label="Siguiente">⏭</button>
+            <button type="button" class="mp-ic" id="mp-full-prev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6z"/><path d="M19 6v12l-9-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
+            <button type="button" class="mp-round mp-round-big" id="mp-full-toggle" aria-label="Reproducir o pausar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+            <button type="button" class="mp-ic" id="mp-full-next" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2z"/><path d="M5 6v12l9-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></button>
         </div>
 
         <section class="mp-explora" id="mp-explora" hidden>
@@ -58,7 +59,7 @@
             <div class="mp-explora-grid" id="mp-explora-grid"></div>
         </section>
 
-        <button type="button" class="mp-com-btn" id="mp-com-btn">💬 Comentarios de la canción</button>
+        <button type="button" class="mp-com-btn" id="mp-com-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg> Comentarios de la canción</button>
         <div class="mp-com" id="mp-com" hidden>
             <div class="mp-com-head">
                 <span>Comentarios</span>
