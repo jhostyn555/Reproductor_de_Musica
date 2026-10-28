@@ -16,8 +16,49 @@
     <meta name="apple-mobile-web-app-title" content="MusicApp" />
     <link rel="apple-touch-icon" href="~/icons/apple-touch-icon-180.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="~/icons/favicon-32.png" />
+    <style>
+        /* Fondo: video en bucle con un velo oscuro para que el contenido se lea bien */
+        body.user-panel-body { background: #000 !important; }
+
+        .fondo-video {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            pointer-events: none;
+            background: #000;
+        }
+        .fondo-velo {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55));
+        }
+
+        body.user-panel-body > .up-main { position: relative; z-index: 1; background: transparent; }
+
+        /* Botón de cuenta: persona en reposo; imagen del perfil cuando el menú está abierto */
+        .up-account-btn { position: relative; }
+        .up-account-btn .up-acc-img { display: none; width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+        .up-account-btn[aria-expanded="true"] .up-acc-img { display: block; }
+        .up-account-btn[aria-expanded="true"] .up-acc-icon { display: none; }
+    </style>
 </head>
 <body class="user-panel-body">
+    <!-- Fondo: video en bucle (generado desde la imagen de referencia) -->
+    <video class="fondo-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" disablepictureinpicture>
+        <source src="/video/fondo-neon.mp4" type="video/mp4" />
+    </video>
+    <div class="fondo-velo" aria-hidden="true"></div>
+    <script>
+        // Respeta la preferencia de "reducir movimiento": el video queda detenido en el primer cuadro.
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.querySelector('.fondo-video').pause();
+        }
+    </script>
 
     <!-- ══════════════════════════════════════════
          SIDEBAR
@@ -212,6 +253,11 @@
 
         <!-- Topbar -->
         @{
+            var avatarTop = User.Identity?.IsAuthenticated == true
+                ? Db.Users.Where(u => u.UserName == User.Identity!.Name).Select(u => u.AvatarUrl).FirstOrDefault()
+                : null;
+        }
+        @{
             var anunciosActivos = Db.Anuncios
                 .Where(a => a.Activo && a.ImagenUrl != null)
                 .OrderByDescending(a => a.CreadoEn)
@@ -268,17 +314,30 @@
                 <!-- Botón de cuenta (persona) -->
                 <div class="dropdown">
                     <button class="up-account-btn" type="button" id="upAccountMenu" data-bs-toggle="dropdown" aria-expanded="false" title="Cuenta">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="up-acc-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                             <circle cx="12" cy="7" r="4" />
                         </svg>
+                        @if (!string.IsNullOrEmpty(avatarTop))
+                        {
+                            <img class="up-acc-img" src="@avatarTop" alt="" />
+                        }
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end up-account-menu" aria-labelledby="upAccountMenu">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li>
                                 <div class="up-acc-head">
-                                    <div class="up-acc-avatar">@(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")</div>
+                                    <div class="up-acc-avatar">
+                                        @if (!string.IsNullOrEmpty(avatarTop))
+                                        {
+                                            <img src="@avatarTop" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block" />
+                                        }
+                                        else
+                                        {
+                                            @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")
+                                        }
+                                    </div>
                                     <div>
                                         <div class="up-acc-name">@User.Identity.Name</div>
                                         <div class="up-acc-role">@(User.IsInRole("Admin") ? "Administrador" : "Usuario")</div>
