@@ -139,6 +139,77 @@ namespace EcommerceApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: MisPlaylists/Mis?musicaId=5 — playlists privadas del usuario (indica si ya tienen la canción)
+        [HttpGet]
+        public async Task<IActionResult> Mis(int musicaId)
+        {
+            var uid = UserId;
+            if (uid == null) return Unauthorized();
+
+            var lista = await _db.Playlists
+                .Where(p => !p.EsPublica && p.CreadoPorId == uid)
+                .OrderBy(p => p.Nombre)
+                .Select(p => new
+                {
+                    id = p.Id,
+                    nombre = p.Nombre,
+                    total = p.Canciones.Count(),
+                    contiene = p.Canciones.Any(c => c.MusicaId == musicaId)
+                })
+                .ToListAsync();
+            return Json(lista);
+        }
+
+        // POST: MisPlaylists/AgregarCancion — agrega la canción a varias playlists propias
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AgregarCancion(int musicaId, List<int> playlistIds)
+        {
+            var uid = UserId;
+            if (uid == null) return Unauthorized();
+            if (!await _db.Musicas.AnyAsync(m => m.Id == musicaId && m.Estado == "Aprobada")) return NotFound();
+
+            var ids = (playlistIds ?? new List<int>()).Distinct().ToList();
+            var playlists = await _db.Playlists
+                .Where(p => ids.Contains(p.Id) && !p.EsPublica && p.CreadoPorId == uid)
+                .Include(p => p.Canciones)
+                .ToListAsync();
+
+            int agregadas = 0;
+            foreach (var p in playlists)
+            {
+                if (p.Canciones.Any(c => c.MusicaId == musicaId)) continue;
+                var orden = p.Canciones.Count == 0 ? 1 : p.Canciones.Max(c => c.Orden) + 1;
+                _db.PlaylistMusicas.Add(new PlaylistMusica { PlaylistId = p.Id, MusicaId = musicaId, Orden = orden });
+                agregadas++;
+            }
+            await _db.SaveChangesAsync();
+            return Json(new { agregadas });
+        }
+
+        // POST: MisPlaylists/CrearConCancion — crea una playlist privada que ya contiene la canción
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CrearConCancion(string nombre, int musicaId)
+        {
+            var uid = UserId;
+            if (uid == null) return Unauthorized();
+
+            var limpio = (nombre ?? string.Empty).Trim();
+            if (limpio.Length == 0 || limpio.Length > 120)
+                return BadRequest("El nombre debe tener entre 1 y 120 caracteres.");
+            if (!await _db.Musicas.AnyAsync(m => m.Id == musicaId && m.Estado == "Aprobada")) return NotFound();
+
+            var playlist = new Playlist { Nombre = limpio, EsPublica = false, CreadoPorId = uid };
+            _db.Playlists.Add(playlist);
+            await _db.SaveChangesAsync();
+
+            _db.PlaylistMusicas.Add(new PlaylistMusica { PlaylistId = playlist.Id, MusicaId = musicaId, Orden = 1 });
+            await _db.SaveChangesAsync();
+
+            return Json(new { id = playlist.Id, nombre = playlist.Nombre });
+        }
+
         // GET: MisPlaylists/Details/5 — propias privadas o cualquier pública
         public async Task<IActionResult> Details(int id)
         {

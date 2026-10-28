@@ -24,15 +24,15 @@
             <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Ir al artista <small>Sin artista</small></span>
         }
 
-        <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Agregar a playlist <small>Próximamente</small></span>
-        <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Agregar a lista <small>Próximamente</small></span>
-        @if (Model.PrimerAlbumId.HasValue)
+        <button type="button" class="mm-item" role="menuitem" data-agregar-playlist data-musica-id="@m.Id">Agregar a playlist</button>
+
+        @if (Model.PrimerArtistaId.HasValue)
         {
-            <a class="mm-item" role="menuitem" asp-controller="User" asp-action="Album" asp-route-id="@Model.PrimerAlbumId.Value">Ir al álbum</a>
+            <button type="button" class="mm-item" role="menuitem" data-ir-album data-artista-id="@Model.PrimerArtistaId.Value">Ir al álbum</button>
         }
         else
         {
-            <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Ir al álbum <small>Sin álbum</small></span>
+            <span class="mm-item mm-disabled" role="menuitem" aria-disabled="true">Ir al álbum <small>Sin artista</small></span>
         }
     </div>
 </div>

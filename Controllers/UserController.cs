@@ -143,6 +143,18 @@ namespace EcommerceApp.Controllers
             }));
         }
 
+        // GET: User/AlbumDelArtista?artistaId=3 — álbum del artista (null si no tiene)
+        [HttpGet]
+        public async Task<IActionResult> AlbumDelArtista(int artistaId)
+        {
+            var albumId = await _db.Albumes
+                .Where(a => a.ArtistaId == artistaId)
+                .OrderByDescending(a => a.FechaCreacion)
+                .Select(a => (int?)a.Id)
+                .FirstOrDefaultAsync();
+            return Json(new { albumId });
+        }
+
         public async Task<IActionResult> Album(int id)
         {
             var album = await _db.Albumes

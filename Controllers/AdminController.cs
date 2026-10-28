@@ -126,7 +126,6 @@ namespace EcommerceApp.Controllers
         public IActionResult Albumes() => RedirectToAction("Index", "Albumes");
         public IActionResult Playlists() => RedirectToAction("Index", "Playlists");
         public IActionResult Comentarios() => RedirectToAction("Index", "Comentarios");
-        public IActionResult Estadisticas() => View();
         public IActionResult Publicidad() => RedirectToAction("Index", "Anuncios");
         public IActionResult Notificaciones() => RedirectToAction("Index", "Notificaciones");
         public IActionResult Usuarios() => RedirectToAction("Index", "Usuarios");
