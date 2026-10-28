@@ -1,4 +1,4 @@
-// Service worker de MusicApp.
+// Service worker de RolaLoka.
 // - Precarga solo lo estático (iconos, manifiesto, página sin conexión).
 // - Estáticos (css, js, iconos): sirve desde caché y actualiza en segundo plano.
 // - Navegación: siempre red; si no hay conexión, muestra la página sin conexión.

@@ -1,6 +1,6 @@
 {
-  "name": "MusicApp",
-  "short_name": "MusicApp",
+  "name": "RolaLoka",
+  "short_name": "RolaLoka",
   "description": "Escucha tu música favorita",
   "id": "/",
   "start_url": "/User/Inicio",
